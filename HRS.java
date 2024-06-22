@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+// program ends if the entered room number is greater than 50
+// cannot create another hotel if there is an existing one
+// there should be a choice re which hotel will be viewed or deleted 
+
 public class HRS {
     private Hotel hotel;
 

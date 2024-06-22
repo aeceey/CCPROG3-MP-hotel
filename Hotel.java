@@ -10,7 +10,7 @@ public class Hotel {
     public Hotel(String name, int roomCount) {
         if (roomCount < 1 || roomCount > 50) {
             throw new IllegalArgumentException("Room count must be between 1 and 50.");
-        }
+        } 
 
         this.name = name;
         this.rooms = new ArrayList<>();
