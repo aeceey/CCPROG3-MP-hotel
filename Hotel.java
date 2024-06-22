@@ -42,6 +42,9 @@ public class Hotel {
          return reservations;
     }
 
+
+    // should be updated since the base price can only be done if there are no reservations in the hotel
+    // also not sure if there is a diff between the price here and sa price sa Room class
     public double getBasePrice() {
         return basePrice;
     } 
@@ -59,7 +62,7 @@ public class Hotel {
 
         }
 
-        
+
     public int getRoomCount(){
         return roomCount;
     }
