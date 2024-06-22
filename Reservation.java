@@ -9,5 +9,4 @@ public class Reservation {
     private double totalPrice;
     private double breakdownCost; // not sure about the data type yet
 
-
 }

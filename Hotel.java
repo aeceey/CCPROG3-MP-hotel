@@ -16,7 +16,7 @@ public class Hotel {
 
         if (roomCount < 1 || roomCount > 50)
             throw new IllegalArgumentException("Room count must be between 1 and 50."); // is there another way to execute this
-        //  apparently this ^^ stops the execution and prints out the string 
+        //  apparently this ^^ stops the execution and prints out the string .. will search more abt this/if there are other alternatives
         this.roomCount = roomCount;
 
         for (int i = 1; i <= roomCount; i++) {
@@ -45,10 +45,21 @@ public class Hotel {
     public double getBasePrice() {
         return basePrice;
     } 
-        public void setBasePrice(){
+        public void setBasePrice(double basePrice){
+             if (basePrice < 100.0) {
+                System.out.println("Base price should be greater than or equal to 100.");      
+            }
+
+            this.basePrice = basePrice;
+                for (Room room : rooms) {
+                room.setPrice(basePrice); 
+            }
+            System.out.println("Base price updated");
+
 
         }
 
+        
     public int getRoomCount(){
         return roomCount;
     }
