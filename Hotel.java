@@ -7,98 +7,100 @@ public class Hotel {
     private double basePrice;
     private int roomCount;
 
-
     public Hotel(String name, int roomCount) {
+        if (roomCount < 1 || roomCount > 50) {
+            throw new IllegalArgumentException("Room count must be between 1 and 50.");
+        }
+
         this.name = name;
         this.rooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
         this.basePrice = 1299.0;
-
-        if (roomCount < 1 || roomCount > 50)
-            throw new IllegalArgumentException("Room count must be between 1 and 50."); // is there another way to execute this
-        //  apparently this ^^ stops the execution and prints out the string .. will search more abt this/if there are other alternatives
         this.roomCount = roomCount;
 
         for (int i = 1; i <= roomCount; i++) {
             rooms.add(new Room("Room" + i, basePrice));
         }
-        
-  
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
-        public void setName(String name) {
-            this.name = name;
-        }
 
-    
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ArrayList<Room> getRooms() {
-         return rooms;
+        return rooms;
     }
-    
+
     public ArrayList<Reservation> getReservations() {
-         return reservations;
+        return reservations;
     }
 
-
-    // should be updated since the base price can only be done if there are no reservations in the hotel
-    // also not sure if there is a diff between the price here and sa price sa Room class
     public double getBasePrice() {
         return basePrice;
-    } 
-        public void setBasePrice(double basePrice){
-             if (basePrice < 100.0) {
-                System.out.println("Base price should be greater than or equal to 100.");      
-            }
+    }
 
-            this.basePrice = basePrice;
-                for (Room room : rooms) {
-                room.setPrice(basePrice); 
-            }
-            System.out.println("Base price updated");
-
-
+    public void setBasePrice(double basePrice) {
+        if (basePrice < 100.0) {
+            System.out.println("Base price should be greater than or equal to 100.");
+            return;
         }
 
+        this.basePrice = basePrice;
+        for (int i = 0; i < rooms.size(); i++) {
+            rooms.get(i).setPrice(basePrice);
+        }
+        System.out.println("Base price updated");
+    }
 
-    public int getRoomCount(){
+    public int getRoomCount() {
         return roomCount;
     }
 
-
-    public String addRoom(){
-        if (rooms.size() >= 50){
-            return "Room count cannot be more than 50";
+    public String addRoom(String roomName) {
+        if (rooms.size() >= 50) {
+            return "Room count cannot be more than 50.";
         }
 
-        for (Room r : rooms){
-            if (r.getName().equals(name));
-                return "Room name already exists";
+        for (int i = 0; i < rooms.size(); i++) {
+            if (rooms.get(i).getName().equals(roomName)) {
+                return "Room name already exists.";
+            }
         }
 
-
-        rooms.add(new Room(name, basePrice));
+        rooms.add(new Room(roomName, basePrice));
         roomCount++;
-        return "Room added";
+        return "Room added.";
     }
 
-    // does not yet consider if there is an active reservation
-    public String removeRoom(){  // can also return void instead and print the texts instead .. let's chane to this after if possible
-        if (rooms.size() <= 1){
-            return "Room count cannot be less than 1";
+    public String removeRoom(String roomName) {
+        if (rooms.size() <= 1) {
+            return "Room count cannot be less than 1.";
         }
 
-        for (Room r : rooms){
-            if (r.getName().equals(name));
-                rooms.remove(r);
-                return "Room deleted";
+        Room roomToRemove = null;
+        for (int i = 0; i < rooms.size(); i++) {
+            if (rooms.get(i).getName().equals(roomName)) {
+                roomToRemove = rooms.get(i);
+                break;
+            }
         }
 
+        if (roomToRemove == null) {
+            return "Room does not exist.";
+        }
 
-        return "Room does not exist";
+        for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getRoom().equals(roomToRemove)) {
+                return "Room cannot be removed as it has active reservations.";
+            }
+        }
+
+        rooms.remove(roomToRemove);
+        roomCount--;
+        return "Room deleted.";
     }
-
-
 }
