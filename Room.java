@@ -19,7 +19,4 @@ public class Room {
     }
     
 
-    public String addRoom(){
-
-    }
 }
