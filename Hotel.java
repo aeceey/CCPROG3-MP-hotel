@@ -4,7 +4,7 @@ public class Hotel {
     private String name;
     private ArrayList<Room> rooms;
     private ArrayList<Reservation> reservations;
-    private double basePrice; //try to commit
+    private double basePrice; // try to commit .... pull
 
     public Hotel(String name, int roomCount) {
         this.name = name;
