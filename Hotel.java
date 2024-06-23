@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Hotel {
@@ -64,17 +65,17 @@ public class Hotel {
         if (rooms.size() >= 50) {
             return "Room count cannot be more than 50.";
         }
-
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).getName().equals(roomName)) {
+    
+        for (Room room : rooms) {
+            if (room.getName().equals(roomName)) {
                 return "Room name already exists.";
             }
         }
-
+    
         rooms.add(new Room(roomName, basePrice));
-        roomCount++;
         return "Room added.";
     }
+    
 
     public String removeRoom(String roomName) {
         if (rooms.size() <= 1) {
@@ -103,4 +104,39 @@ public class Hotel {
         roomCount--;
         return "Room deleted.";
     }
+
+    public String removeReservation(String guestName, LocalDate checkInDate) {
+        Reservation toRemove = null;
+        for (Reservation res : reservations) {
+            if (res.getGuestName().equals(guestName) && res.getCheckInDate().equals(checkInDate)) {
+                toRemove = res;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            reservations.remove(toRemove);
+            return "Reservation removed.";
+        } else {
+            return "Reservation not found.";
+        }
+    }
+
+    public String viewRoom(String roomName) {
+        for (Room room : rooms) {
+            if (room.getName().equals(roomName)) {
+                return room.toString();
+            }
+        }
+        return "Room not found.";
+    }
+
+    public String viewReservation(String guestName, LocalDate checkInDate) {
+        for (Reservation res : reservations) {
+            if (res.getGuestName().equals(guestName) && res.getCheckInDate().equals(checkInDate)) {
+                return res.toString();
+            }
+        }
+        return "Reservation not found.";
+    }
 }
+
