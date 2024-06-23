@@ -65,4 +65,15 @@ public class Reservation {
         
         return nights;
     }
+
+    public String toString() {
+        return "Reservation{" +
+                "guestName='" + guestName + '\'' +
+                ", checkInDate=" + checkInDate +
+                ", checkOutDate=" + checkOutDate +
+                ", room=" + room +
+                ", totalPrice=" + totalPrice +
+                ", breakdownCost=" + breakdownCost +
+                '}';
+    }
 }
