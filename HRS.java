@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +10,15 @@ public class HRS {
         this.hotels = new ArrayList<>(); // Initialize list of hotels
     }
 
-    public void createHotel(String name, int roomCount, Scanner scanner) {
+    public void createHotel(String name, int roomCount, double basePrice, Scanner scanner) {
+        if (basePrice < 100) {
+            System.out.println("Base price must be greater than or equal to 100.");
+            return;
+        }
+        if (roomCount < 1 || roomCount > 50) {
+            System.out.println("Room count must be between 1 and 50.");
+            return;
+        }
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {
                 System.out.println("A hotel with this name already exists.");
@@ -17,14 +26,9 @@ public class HRS {
             }
         }
 
-        Hotel newHotel = new Hotel(name, roomCount);
-        for (int i = 0; i < roomCount; i++) {
-            System.out.print("Enter name for room " + (i + 1) + ": ");
-            String roomName = scanner.nextLine();
-            newHotel.addRoom(roomName);
-        }
+        Hotel newHotel = new Hotel(name, roomCount, basePrice); // Pass basePrice to hotel constructor
         hotels.add(newHotel);
-        System.out.println("Hotel created: " + name + " with " + roomCount + " rooms.");
+        System.out.println("Hotel created: " + name + " with " + roomCount + " rooms and base price " + basePrice);
     }
 
     public void removeHotel(String name) {
@@ -54,214 +58,192 @@ public class HRS {
         if (hotelToView == null) {
             System.out.println("No hotel exists with the given name.");
         } else {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("High-level Hotel Information:");
             System.out.println("Hotel Name: " + hotelToView.getName());
             System.out.println("Total Rooms: " + hotelToView.getRoomCount());
-            System.out.println("Base Price per Night: " + hotelToView.getBasePrice());
-            System.out.println("Reservations: " + hotelToView.getReservations().size());
+            System.out.println("Estimated Earnings for the Month: " + hotelToView.calculateEarnings());
+
+            while (true) {
+                System.out.println("\nAvailable Low-level Information:");
+                System.out.println("1. Total number of available and booked rooms for a selected date");
+                System.out.println("2. Information about a selected room");
+                System.out.println("3. Information about a selected reservation");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter date (yyyy-mm-dd): ");
+                        String dateStr = scanner.nextLine();
+                        LocalDate date = LocalDate.parse(dateStr);
+                        hotelToView.getRoomAvailability(date);
+                        break;
+                    case 2:
+                        System.out.print("Enter room name: ");
+                        String roomName = scanner.nextLine();
+                        hotelToView.getRoomInfo(roomName);
+                        break;
+                    case 3:
+                        System.out.print("Enter guest name: ");
+                        String guestName = scanner.nextLine();
+                        System.out.print("Enter check-in date (yyyy-mm-dd): ");
+                        String checkInDateStr = scanner.nextLine();
+                        LocalDate checkInDate = LocalDate.parse(checkInDateStr);
+                        hotelToView.getReservationInfo(guestName, checkInDate);
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
         }
     }
 
-    public void manageHotel(String hotelName) {
-        Hotel hotelToManage = null;
-        for (Hotel hotel : hotels) {
-            if (hotel.getName().equals(hotelName)) {
-                hotelToManage = hotel;
-                break;
-            }
-        }
-        if (hotelToManage == null) {
+    public void manageHotel(String name, Scanner scanner) {
+        Hotel hotel = findHotelByName(name);
+        if (hotel == null) {
             System.out.println("No hotel exists with the given name.");
             return;
         }
-
-        Scanner scanner = new Scanner(System.in);
-
+    
         while (true) {
-            System.out.println("\nManage Hotel: " + hotelToManage.getName());
-            System.out.println("1. Change Hotel Name");
-            System.out.println("2. Add Room");
-            System.out.println("3. Remove Room");
-            System.out.println("4. Update Base Price");
-            System.out.println("5. Remove Reservation");
-            System.out.println("6. Exit");
+            System.out.println("\nManage Hotel: " + hotel.getName());
+            System.out.println("[1] Change Hotel Name");
+            System.out.println("[2] Add Room");
+            System.out.println("[3] Remove Room");
+            System.out.println("[4] Update Base Price");
+            System.out.println("[5] Remove Reservation");
+            System.out.println("[6] View Room Names");
+            System.out.println("[7] Remove Hotel");
+            System.out.println("[8] Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-
+            scanner.nextLine(); // Consume newline
+    
             switch (choice) {
                 case 1:
                     System.out.print("Enter new hotel name: ");
-                    scanner.nextLine(); // consume newline
                     String newName = scanner.nextLine();
-                    hotelToManage.setName(newName);
-                    System.out.println("Hotel name updated to: " + newName);
+                    hotel.setName(newName);
+                    System.out.println("Hotel name changed to: " + newName);
                     break;
                 case 2:
-                    System.out.print("Enter room name: ");
-                    scanner.nextLine(); // consume newline
-                    String roomName = scanner.nextLine();
-                    System.out.println(hotelToManage.addRoom(roomName));
+                    System.out.println(hotel.addRoom());
                     break;
                 case 3:
-                    System.out.print("Enter room name: ");
-                    scanner.nextLine(); // consume newline
-                    String roomNameToRemove = scanner.nextLine();
-                    System.out.println(hotelToManage.removeRoom(roomNameToRemove));
+                    System.out.print("Enter room name to remove: ");
+                    String roomName = scanner.nextLine();
+                    System.out.println(hotel.removeRoom(roomName));
                     break;
                 case 4:
                     System.out.print("Enter new base price: ");
                     double newBasePrice = scanner.nextDouble();
-                    hotelToManage.setBasePrice(newBasePrice);
+                    scanner.nextLine(); // Consume newline
+                    hotel.setBasePrice(newBasePrice);
+                    System.out.println("Base price updated to: " + newBasePrice);
                     break;
                 case 5:
                     System.out.print("Enter guest name: ");
-                    scanner.nextLine(); // consume newline
                     String guestName = scanner.nextLine();
-                    System.out.print("Enter check-in date (yyyy-MM-dd): ");
-                    String checkIn = scanner.nextLine();
-                    LocalDate checkInDate = LocalDate.parse(checkIn);
-                    System.out.println(hotelToManage.removeReservation(guestName, checkInDate));
+                    System.out.print("Enter check-in date (yyyy-mm-dd): ");
+                    String checkInDateStr = scanner.nextLine();
+                    LocalDate checkInDate = LocalDate.parse(checkInDateStr);
+                    System.out.println(hotel.removeReservation(guestName, checkInDate));
                     break;
                 case 6:
-                    System.out.println("Exiting Manage Hotel menu.");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-
-    public void addReservation(String hotelName, String guestName, LocalDate checkInDate, LocalDate checkOutDate, String roomName) {
-        Hotel hotel = null;
-        for (Hotel h : hotels) {
-            if (h.getName().equals(hotelName)) {
-                hotel = h;
-                break;
-            }
-        }
-        if (hotel == null) {
-            System.out.println("No hotel exists with the given name.");
-            return;
-        }
-
-        Room roomToBook = null;
-        for (Room room : hotel.getRooms()) {
-            if (room.getName().equals(roomName)) {
-                roomToBook = room;
-                break;
-            }
-        }
-
-        if (roomToBook == null) {
-            System.out.println("Room not found.");
-            return;
-        }
-
-        for (Reservation res : hotel.getReservations()) {
-            if (res.getRoom().equals(roomToBook) && !(checkOutDate.isBefore(res.getCheckInDate()) || checkInDate.isAfter(res.getCheckOutDate()))) {
-                System.out.println("Room is not available for the selected dates.");
-                return;
-            }
-        }
-
-        Reservation newReservation = new Reservation(guestName, checkInDate, checkOutDate, roomToBook);
-        hotel.getReservations().add(newReservation);
-        System.out.println("Reservation added for " + guestName + " from " + checkInDate + " to " + checkOutDate);
-    }
-
-    public void removeReservation(String hotelName, String guestName, LocalDate checkInDate) {
-        Hotel hotel = null;
-        for (Hotel h : hotels) {
-            if (h.getName().equals(hotelName)) {
-                hotel = h;
-                break;
-            }
-        }
-        if (hotel == null) {
-            System.out.println("No hotel exists with the given name.");
-            return;
-        }
-
-        String result = hotel.removeReservation(guestName, checkInDate);
-        System.out.println(result);
-    }
-
-    public static void main(String[] args) {
-        HRS hrs = new HRS();
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("\nHotel Reservation System (HRS)");
-            System.out.println("1. Create Hotel");
-            System.out.println("2. View Hotel");
-            System.out.println("3. Remove Hotel");
-            System.out.println("4. Manage Hotel");
-            System.out.println("5. Add Reservation");
-            System.out.println("6. Remove Reservation");
-            System.out.println("7. Exit");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String name = scanner.nextLine();
-                    System.out.print("Enter number of rooms: ");
-                    int roomCount = scanner.nextInt();
-                    scanner.nextLine(); // consume newline
-                    hrs.createHotel(name, roomCount, scanner);
-                    break;
-                case 2:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String hotelToView = scanner.nextLine();
-                    hrs.viewHotel(hotelToView);
-                    break;
-                case 3:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String hotelToRemove = scanner.nextLine();
-                    hrs.removeHotel(hotelToRemove);
-                    break;
-                case 4:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String hotelToManage = scanner.nextLine();
-                    hrs.manageHotel(hotelToManage);
-                    break;
-                case 5:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String hotelNameForRes = scanner.nextLine();
-                    System.out.print("Enter guest name: ");
-                    String guestName = scanner.nextLine();
-                    System.out.print("Enter check-in date (yyyy-MM-dd): ");
-                    String checkIn = scanner.nextLine();
-                    System.out.print("Enter check-out date (yyyy-MM-dd): ");
-                    String checkOut = scanner.nextLine();
-                    System.out.print("Enter room name: ");
-                    String roomName = scanner.nextLine();
-                    LocalDate checkInDate = LocalDate.parse(checkIn);
-                    LocalDate checkOutDate = LocalDate.parse(checkOut);
-                    hrs.addReservation(hotelNameForRes, guestName, checkInDate, checkOutDate, roomName);
-                    break;
-                case 6:
-                    System.out.print("Enter hotel name: ");
-                    scanner.nextLine();
-                    String hotelNameForRemoval = scanner.nextLine();
-                    System.out.print("Enter guest name: ");
-                    String guestToRemove = scanner.nextLine();
-                    System.out.print("Enter check-in date (yyyy-MM-dd): ");
-                    String checkInToRemove = scanner.nextLine();
-                    LocalDate checkInDateToRemove = LocalDate.parse(checkInToRemove);
-                    hrs.removeReservation(hotelNameForRemoval, guestToRemove, checkInDateToRemove);
+                    hotel.displayRooms();
                     break;
                 case 7:
-                    System.out.println("Exiting HRS.");
-                    return;
+                    System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
+                    String confirmation = scanner.nextLine();
+                    if (confirmation.equalsIgnoreCase("yes")) {
+                        removeHotel(name);
+                        return; // Exit the manage menu after removing the hotel
+                    } else {
+                        System.out.println("Hotel removal canceled.");
+                    }
+                    break;
+                case 8:
+                    return; // Exit the manage menu
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
         }
+    }
+    
+    public void simulateBooking(Scanner scanner) {
+        System.out.print("Enter hotel name: ");
+        String hotelName = scanner.nextLine();
+        Hotel hotel = findHotelByName(hotelName);
+        if (hotel == null) {
+            System.out.println("No hotel exists with the given name.");
+            return;
+        }
+
+        System.out.print("Enter guest name: ");
+        String guestName = scanner.nextLine();
+
+        LocalDate checkInDate = promptForDate("check-in");
+        if (checkInDate == null || !isValidBookingDate(checkInDate)) {
+            System.out.println("Invalid check-in date. Bookings cannot be made outside of the defined period for the month.");
+            return;
+        }
+
+        LocalDate checkOutDate = promptForDate("check-out");
+        if (checkOutDate == null || !isValidBookingDate(checkOutDate)) {
+            System.out.println("Invalid check-out date. Bookings cannot be made outside of the defined period for the month.");
+            return;
+        }
+
+        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate);
+        if (reservation != null) {
+            System.out.println("Booking successful!");
+            System.out.println(reservation);
+        } else {
+            System.out.println("No available rooms for the selected dates.");
+        }
+    }
+
+    // Method to prompt user for a valid date input
+    private LocalDate promptForDate(String dateType) {
+        Scanner scanner = new Scanner(System.in);
+        LocalDate date = null;
+        boolean isValid = false;
+
+        while (!isValid) {
+            System.out.print("Enter " + dateType + " date (yyyy-mm-dd): ");
+            String dateStr = scanner.nextLine();
+
+            try {
+                date = LocalDate.parse(dateStr);
+                isValid = true;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter date in yyyy-mm-dd format.");
+                // Optionally, you can log the exception or handle it further as needed.
+            }
+        }
+        return date;
+    }
+
+    // Method to check if a booking date is within the defined period for the month
+    private boolean isValidBookingDate(LocalDate date) {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1); // Start of the current month
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth()); // End of the current month
+
+        return !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
+    }
+
+    // Helper method to find a hotel by name
+    private Hotel findHotelByName(String name) {
+        for (Hotel hotel : hotels) {
+            if (hotel.getName().equals(name)) {
+                return hotel;
+            }
+        }
+        return null;
     }
 }

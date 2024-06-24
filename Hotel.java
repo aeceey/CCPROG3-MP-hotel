@@ -1,36 +1,64 @@
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class Hotel {
     private String name;
+    private int roomCount;
+    private double basePrice;
     private ArrayList<Room> rooms;
     private ArrayList<Reservation> reservations;
-    private double basePrice;
-    private int roomCount;
+    private int nextRoomNumber; // New field to track the next room number
 
-    public Hotel(String name, int roomCount) {
+    public Hotel(String name, int roomCount, double basePrice) {
+
+        if (basePrice < 100) {
+            throw new IllegalArgumentException("Base price must be greater than or equal to 100.0" );}
         if (roomCount < 1 || roomCount > 50) {
-            throw new IllegalArgumentException("Room count must be between 1 and 50.");
-        } 
-
+            throw new IllegalArgumentException("Room count must be between 1 and 50" );
+        }
         this.name = name;
+        this.roomCount = roomCount;
+        this.basePrice = basePrice; 
         this.rooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
-        this.basePrice = 1299.0;
-        this.roomCount = roomCount;
+        this.nextRoomNumber = 1; // Initialize to 1 for sequential room numbering
+        
 
         for (int i = 1; i <= roomCount; i++) {
-            rooms.add(new Room("Room" + i, basePrice));
+            String roomName = name + String.format("%02d", nextRoomNumber++);
+            this.rooms.add(new Room(roomName, basePrice));
         }
     }
+    
 
     public String getName() {
         return name;
     }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getRoomCount() {
+        return roomCount;
     }
+        public void setRoomCount(int roomCount) {
+            if (roomCount > 50) {
+                System.out.println("Cannot set room count more than 50" );
+                return;
+            }
+            this.roomCount = roomCount;
+        }
+
+    public double getBasePrice() {
+        return basePrice;
+    }
+        public void setBasePrice(double basePrice) {
+            if (basePrice < 100.0) {
+                System.out.println("Base price must be greater than or equal to 100.0" );
+                return;
+            }
+            this.basePrice = basePrice;
+        }
 
     public ArrayList<Room> getRooms() {
         return rooms;
@@ -40,103 +68,196 @@ public class Hotel {
         return reservations;
     }
 
-    public double getBasePrice() {
-        return basePrice;
-    }
-
-    public void setBasePrice(double basePrice) {
-        if (basePrice < 100.0) {
-            System.out.println("Base price should be greater than or equal to 100.");
-            return;
-        }
-
-        this.basePrice = basePrice;
-        for (int i = 0; i < rooms.size(); i++) {
-            rooms.get(i).setPrice(basePrice);
-        }
-        System.out.println("Base price updated");
-    }
-
-    public int getRoomCount() {
-        return roomCount;
-    }
-
-    public String addRoom(String roomName) {
+    /**
+     * ADD ROOM METHOD
+     * @return
+     */
+    public String addRoom() {
         if (rooms.size() >= 50) {
             return "Room count cannot be more than 50.";
         }
-    
+        String newRoomName = name + String.format("%02d", nextRoomNumber++);
+        rooms.add(new Room(newRoomName, basePrice));
+        roomCount++;
+        return "Room added: " + newRoomName;
+    }
+
+    /**
+     * REMOVE ROOM METHOD
+     * @return
+     */
+    public String removeRoom(String roomName) {
+        Room roomToRemove = null;
         for (Room room : rooms) {
             if (room.getName().equals(roomName)) {
-                return "Room name already exists.";
-            }
-        }
-    
-        rooms.add(new Room(roomName, basePrice));
-        return "Room added.";
-    }
-    
-
-    public String removeRoom(String roomName) {
-        if (rooms.size() <= 1) {
-            return "Room count cannot be less than 1.";
-        }
-
-        Room roomToRemove = null;
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).getName().equals(roomName)) {
-                roomToRemove = rooms.get(i);
+                roomToRemove = room;
                 break;
             }
         }
-
         if (roomToRemove == null) {
-            return "Room does not exist.";
+            return "No room exists with the given name.";
+        } else {
+            rooms.remove(roomToRemove);
+            roomCount--;
+            return "Room removed: " + roomName;
         }
-
-        for (int i = 0; i < reservations.size(); i++) {
-            if (reservations.get(i).getRoom().equals(roomToRemove)) {
-                return "Room cannot be removed as it has active reservations.";
-            }
-        }
-
-        rooms.remove(roomToRemove);
-        roomCount--;
-        return "Room deleted.";
     }
 
     public String removeReservation(String guestName, LocalDate checkInDate) {
-        Reservation toRemove = null;
+        Reservation reservationToRemove = null;
         for (Reservation res : reservations) {
             if (res.getGuestName().equals(guestName) && res.getCheckInDate().equals(checkInDate)) {
-                toRemove = res;
+                reservationToRemove = res;
                 break;
             }
         }
-        if (toRemove != null) {
-            reservations.remove(toRemove);
-            return "Reservation removed.";
+        if (reservationToRemove == null) {
+            return "No reservation found for the given guest and check-in date.";
         } else {
-            return "Reservation not found.";
+            reservations.remove(reservationToRemove);
+            return "Reservation removed for " + guestName + " on " + checkInDate;
         }
     }
 
-    public String viewRoom(String roomName) {
+    public void displayRooms() {
         for (Room room : rooms) {
-            if (room.getName().equals(roomName)) {
-                return room.toString();
+            System.out.println(room.getName());
+        }
+    }
+
+    /**
+     * CALCULATES EARNING per?
+     * @return
+     */
+    public double calculateEarnings() {
+        double earnings = 0;
+        LocalDate now = LocalDate.now();
+        for (Reservation res : reservations) {
+            if (res.getCheckInDate().getMonth() == now.getMonth()) {
+                earnings += res.getTotalPrice();
             }
         }
-        return "Room not found.";
+        return earnings;
     }
 
-    public String viewReservation(String guestName, LocalDate checkInDate) {
+    // Get total number of available and booked rooms for a selected date
+    public void getRoomAvailability(LocalDate date) {
+        int available = 0;
+        int booked = 0;
+        for (Room room : rooms) {
+            boolean isBooked = false;
+            for (Reservation res : reservations) {
+                if (res.getRoom().equals(room) && !date.isBefore(res.getCheckInDate()) && !date.isAfter(res.getCheckOutDate())) {
+                    isBooked = true;
+                    break;
+                }
+            }
+            if (isBooked) {
+                booked++;
+            } else {
+                available++;
+            }
+        }
+        System.out.println("Total available rooms: " + available);
+        System.out.println("Total booked rooms: " + booked);
+    }
+
+    // Get information about a specific room
+    public void getRoomInfo(String roomName) {
+        Room room = null;
+        for (Room r : rooms) {
+            if (r.getName().equals(roomName)) {
+                room = r;
+                break;
+            }
+        }
+        if (room == null) {
+            System.out.println("No room exists with the given name.");
+            return;
+        }
+        System.out.println("Room Name: " + room.getName());
+        System.out.println("Price per Night: " + room.getPrice());
+        System.out.println("Availability for the month:");
+        LocalDate now = LocalDate.now();
+        for (int i = 1; i <= now.lengthOfMonth(); i++) {
+            LocalDate date = now.withDayOfMonth(i);
+            boolean isAvailable = true;
+            for (Reservation res : reservations) {
+                if (res.getRoom().equals(room) && !date.isBefore(res.getCheckInDate()) && !date.isAfter(res.getCheckOutDate())) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+            System.out.println(date + ": " + (isAvailable ? "Available" : "Booked"));
+        }
+    }
+
+    // Get information about a specific reservation
+    public void getReservationInfo(String guestName, LocalDate checkInDate) {
+        Reservation reservation = null;
         for (Reservation res : reservations) {
             if (res.getGuestName().equals(guestName) && res.getCheckInDate().equals(checkInDate)) {
-                return res.toString();
+                reservation = res;
+                break;
             }
         }
-        return "Reservation not found.";
+        if (reservation == null) {
+            System.out.println("No reservation found for the given guest and check-in date.");
+            return;
+        }
+        System.out.println("Guest Name: " + reservation.getGuestName());
+        System.out.println("Room Name: " + reservation.getRoom().getName());
+        System.out.println("Check-In Date: " + reservation.getCheckInDate());
+        System.out.println("Check-Out Date: " + reservation.getCheckOutDate());
+        System.out.println("Total Price: " + reservation.getTotalPrice());
+        System.out.println("Price Breakdown per Night:");
+        LocalDate date = reservation.getCheckInDate();
+        while (!date.isAfter(reservation.getCheckOutDate())) {
+            System.out.println(date + ": " + reservation.getRoom().getPrice());
+            date = date.plusDays(1);
+        }
+    }
+
+
+    public boolean isValidDateRange(LocalDate checkInDate, LocalDate checkOutDate) {
+        // Ensure check-out is not on the 1st of the month
+        if (checkOutDate.getDayOfMonth() == 1)
+            return false;
+        
+        // Ensure check-in is not on the 31st of the month (assuming a month with 31 days)
+        if (checkInDate.getDayOfMonth() == 31)
+            return false;
+
+        // Bookings cannot be made outside of the defined period for the month (1 to 31)
+        if (checkInDate.getDayOfMonth() < 1 || checkOutDate.getDayOfMonth() > 31)
+            return false;
+
+        return !checkOutDate.isBefore(checkInDate) && !checkOutDate.isEqual(checkInDate);
+    }
+
+    private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+        for (Reservation res : reservations) {
+            if (res.getRoom().equals(room) &&
+                !(checkOutDate.isBefore(res.getCheckInDate()) || checkInDate.isAfter(res.getCheckOutDate()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Reservation simulateBooking(String guestName, LocalDate checkInDate, LocalDate checkOutDate) {
+        if (!isValidDateRange(checkInDate, checkOutDate)) {
+            System.out.println("Invalid date range. Check-out date must be after check-in date.");
+            return null;
+        }
+    
+        for (Room room : rooms) {
+            if (isRoomAvailable(room, checkInDate, checkOutDate)) {
+                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room);
+                reservations.add(reservation);
+                return reservation;
+            }
+        }
+        return null; // No available rooms
     }
 }
-

@@ -20,6 +20,10 @@ public class Room {
     }
 
     public void setPrice(double price) {
+        if (price < 100.0) {
+            System.out.println("Room price must be greater than or equal to 100" );
+            return;
+        }
         this.price = price;
     }
 
