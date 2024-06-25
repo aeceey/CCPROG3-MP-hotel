@@ -37,17 +37,23 @@ public class Room {
         return reservations;
     }
 
-    public boolean isAvailable(LocalDate date) {
-        for (Reservation reservation : reservations) {
-            if (!date.isBefore(reservation.getCheckInDate()) && !date.isAfter(reservation.getCheckOutDate())) {
-                return false; // Room is booked for this date
-            }
-        }
-        return true; // Room is available for this date
-    }
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
 
-}
+    public void removeReservation(Reservation reservation) {
+        this.reservations.remove(reservation);
+    }
+
+  // Update the isAvailable method to check against the room's reservations
+    public boolean isAvailable(LocalDate date) {
+            for (Reservation res : this.reservations) {
+                if (!date.isBefore(res.getCheckInDate()) && !date.isAfter(res.getCheckOutDate())) {
+                    return false;
+                }
+            }
+        return true;
+    }
+    
+    }

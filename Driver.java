@@ -22,10 +22,8 @@ public class Driver {
                     String name = scanner.nextLine();
                     System.out.print("Enter number of rooms: ");
                     int roomCount = scanner.nextInt();
-                    System.out.print("Enter base price for rooms: ");
-                    double basePrice = scanner.nextDouble();
                     scanner.nextLine(); // Consume newline
-                    hrs.createHotel(name, roomCount, basePrice, scanner);
+                    hrs.createHotel(name, roomCount, scanner);
                     break;
                 case 2:
                     System.out.print("Enter hotel name: ");

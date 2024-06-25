@@ -8,35 +8,37 @@ public class Hotel {
     private ArrayList<Room> rooms;
     private ArrayList<Reservation> reservations;
     private int nextRoomNumber; // New field to track the next room number
+    private boolean hasBookings;
+    private HRS hrs; // Reference to HRS instance
 
-    public Hotel(String name, int roomCount, double basePrice) {
-
-        if (basePrice < 100) {
-            throw new IllegalArgumentException("Base price must be greater than or equal to 100.0" );}
-        if (roomCount < 1 || roomCount > 50) {
-            throw new IllegalArgumentException("Room count must be between 1 and 50" );
-        }
+    public Hotel(String name, int roomCount, HRS hrs) {
         this.name = name;
         this.roomCount = roomCount;
-        this.basePrice = basePrice; 
+        this.basePrice = 1299.0; // Automatically assigning base price to 1299
         this.rooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
         this.nextRoomNumber = 1; // Initialize to 1 for sequential room numbering
-        
+        this.hrs = hrs; // Set the HRS instance reference
 
         for (int i = 1; i <= roomCount; i++) {
             String roomName = name + String.format("%02d", nextRoomNumber++);
             this.rooms.add(new Room(roomName, basePrice));
         }
     }
-    
 
     public String getName() {
         return name;
     }
-        public void setName(String name) {
+
+    public void setName(String name) {
+        if (hrs.isHotelNameTaken(name)) {
+            System.out.println("A hotel with this name already exists.");
+        } else {
             this.name = name;
+            System.out.println("Hotel name changed to: " + name);
         }
+    }
+    
 
     public int getRoomCount() {
         return roomCount;
@@ -52,13 +54,23 @@ public class Hotel {
     public double getBasePrice() {
         return basePrice;
     }
-        public void setBasePrice(double basePrice) {
-            if (basePrice < 100.0) {
-                System.out.println("Base price must be greater than or equal to 100.0" );
-                return;
-            }
-            this.basePrice = basePrice;
+
+    public void setBasePrice(double basePrice) {
+        if (!reservations.isEmpty()) {
+            System.out.println("Cannot update base price as there are existing bookings in the hotel.");
+            return;
         }
+        if (basePrice < 100.0) {
+            System.out.println("Base price must be greater than or equal to 100.0");
+            return;
+        }
+        this.basePrice = basePrice;
+        // Update the price of all rooms
+        for (Room room : rooms) {
+            room.setPrice(basePrice);
+        }
+        System.out.println("Base price updated successfully to " + basePrice);
+    }
 
     public ArrayList<Room> getRooms() {
         return rooms;
@@ -114,10 +126,17 @@ public class Hotel {
         if (reservationToRemove == null) {
             return "No reservation found for the given guest and check-in date.";
         } else {
+            // Remove the reservation from the hotel's list
             reservations.remove(reservationToRemove);
+            
+            // Remove the reservation from the room
+            Room room = reservationToRemove.getRoom();
+            room.removeReservation(reservationToRemove);
+            
             return "Reservation removed for " + guestName + " on " + checkInDate;
         }
     }
+    
 
     public void displayRooms() {
         for (Room room : rooms) {
@@ -250,5 +269,14 @@ public class Hotel {
         }
         return null; // No available rooms
     }
+
+    public boolean hasBookings() {
+        return !reservations.isEmpty();
+    }
+    
+    public void setHasBookings(boolean hasBookings) {
+        this.hasBookings = hasBookings;
+    }
+    
 
 }

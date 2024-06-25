@@ -5,29 +5,33 @@ import java.util.Scanner;
 
 public class HRS {
     private ArrayList<Hotel> hotels;
+
     public HRS() {
         this.hotels = new ArrayList<>(); // Initialize list of hotels
     }
 
-    public void createHotel(String name, int roomCount, double basePrice, Scanner scanner) {
-        if (basePrice < 100) {
-            System.out.println("Base price must be greater than or equal to 100.");
-            return;
-        }
+    public void createHotel(String name, int roomCount, Scanner scanner) {
         if (roomCount < 1 || roomCount > 50) {
             System.out.println("Room count must be between 1 and 50.");
             return;
         }
-        for (Hotel hotel : hotels) {
-            if (hotel.getName().equals(name)) {
-                System.out.println("A hotel with this name already exists.");
-                return;
-            }
+        if (isHotelNameTaken(name)) {
+            System.out.println("A hotel with this name already exists.");
+            return;
         }
 
-        Hotel newHotel = new Hotel(name, roomCount, basePrice); // Pass basePrice to hotel constructor
+        Hotel newHotel = new Hotel(name, roomCount, this); // Pass this HRS instance to the hotel constructor
         hotels.add(newHotel);
-        System.out.println("Hotel created: " + name + " with " + roomCount + " rooms and base price " + basePrice);
+        System.out.println("Hotel created: " + name + " with " + roomCount + " rooms and base price 1299");
+    }
+
+    public boolean isHotelNameTaken(String name) {
+        for (Hotel hotel : hotels) {
+            if (hotel.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeHotel(String name) {
@@ -107,7 +111,7 @@ public class HRS {
             System.out.println("No hotel exists with the given name.");
             return;
         }
-
+    
         while (true) {
             System.out.println("\nManage Hotel: " + hotel.getName());
             System.out.println("[1] Change Hotel Name");
@@ -121,14 +125,14 @@ public class HRS {
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
-
+    
             switch (choice) {
                 case 1:
-                    System.out.print("Enter new hotel name: ");
-                    String newName = scanner.nextLine();
-                    hotel.setName(newName);
-                    System.out.println("Hotel name changed to: " + newName);
-                    break;
+                System.out.print("Enter new hotel name: ");
+                String newName = scanner.nextLine();
+                hotel.setName(newName); // setName will handle the message
+                break;
+            
                 case 2:
                     System.out.println(hotel.addRoom());
                     break;
@@ -142,7 +146,6 @@ public class HRS {
                     double newBasePrice = scanner.nextDouble();
                     scanner.nextLine(); // Consume newline
                     hotel.setBasePrice(newBasePrice);
-                    System.out.println("Base price updated to: " + newBasePrice);
                     break;
                 case 5:
                     System.out.print("Enter guest name: ");
@@ -172,6 +175,7 @@ public class HRS {
             }
         }
     }
+    
 
     public void simulateBooking(Scanner scanner) {
         System.out.print("Enter hotel name: ");
