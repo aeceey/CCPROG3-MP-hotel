@@ -174,6 +174,15 @@ public class HRS {
             }
         }
     }
+
+    public Hotel findHotelByName(String name) {
+        for (Hotel hotel : hotels) {
+            if (hotel.getName().equals(name)) {
+                return hotel;
+            }
+        }
+        return null; // Return null if no hotel with the given name is found
+    }
     
     public void simulateBooking(Scanner scanner) {
         System.out.print("Enter hotel name: ");
@@ -183,22 +192,34 @@ public class HRS {
             System.out.println("No hotel exists with the given name.");
             return;
         }
-
+    
         System.out.print("Enter guest name: ");
         String guestName = scanner.nextLine();
-
+    
         LocalDate checkInDate = promptForDate("check-in");
-        if (checkInDate == null || !isValidBookingDate(checkInDate)) {
-            System.out.println("Invalid check-in date. Bookings cannot be made outside of the defined period for the month.");
+        if (checkInDate == null) {
+            System.out.println("Invalid check-in date.");
             return;
         }
-
+    
         LocalDate checkOutDate = promptForDate("check-out");
-        if (checkOutDate == null || !isValidBookingDate(checkOutDate)) {
-            System.out.println("Invalid check-out date. Bookings cannot be made outside of the defined period for the month.");
+        if (checkOutDate == null) {
+            System.out.println("Invalid check-out date.");
             return;
         }
-
+    
+        // Validate that check-in and check-out dates are within the same month
+        if (checkInDate.getMonth() != checkOutDate.getMonth() || checkInDate.getYear() != checkOutDate.getYear()) {
+            System.out.println("Check-in and check-out dates must be within the same month.");
+            return;
+        }
+    
+        // Validate specific date constraints: check-in cannot be on the 31st of any month
+        if (checkInDate.getDayOfMonth() == 31) {
+            System.out.println("Guests cannot check in on the 31st of any month.");
+            return;
+        }
+    
         Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate);
         if (reservation != null) {
             System.out.println("Booking successful!");
@@ -207,6 +228,7 @@ public class HRS {
             System.out.println("No available rooms for the selected dates.");
         }
     }
+    
 
     // Method to prompt user for a valid date input
     private LocalDate promptForDate(String dateType) {
@@ -228,22 +250,11 @@ public class HRS {
         }
         return date;
     }
-
-    // Method to check if a booking date is within the defined period for the month
-    private boolean isValidBookingDate(LocalDate date) {
-        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1); // Start of the current month
-        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth()); // End of the current month
-
-        return !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
-    }
-
-    // Helper method to find a hotel by name
-    private Hotel findHotelByName(String name) {
-        for (Hotel hotel : hotels) {
-            if (hotel.getName().equals(name)) {
-                return hotel;
-            }
-        }
-        return null;
-    }
 }
+
+    // Remove this method because it's no longer needed
+    // private boolean isValidBookingDate(LocalDate date) {
+    //     LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1); // Start of the current month
+    //     LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth()); // End of the current month
+
+    //     return !date.isBefore(startOfMonth) && !date.isAfter(end
