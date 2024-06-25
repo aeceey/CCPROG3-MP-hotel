@@ -142,25 +142,17 @@ public class Hotel {
 
     // Get total number of available and booked rooms for a selected date
     public void getRoomAvailability(LocalDate date) {
-        int available = 0;
-        int booked = 0;
+        System.out.println("Availability for the date: " + date);
         for (Room room : rooms) {
-            boolean isBooked = false;
-            for (Reservation res : reservations) {
-                if (res.getRoom().equals(room) && !date.isBefore(res.getCheckInDate()) && !date.isAfter(res.getCheckOutDate())) {
-                    isBooked = true;
-                    break;
-                }
-            }
-            if (isBooked) {
-                booked++;
+            System.out.print("Room Name: " + room.getName());
+            if (room.isAvailable(date)) {
+                System.out.println(" - Available");
             } else {
-                available++;
+                System.out.println(" - Booked");
             }
         }
-        System.out.println("Total available rooms: " + available);
-        System.out.println("Total booked rooms: " + booked);
     }
+    
 
     // Get information about a specific room
     public void getRoomInfo(String roomName) {
@@ -224,16 +216,13 @@ public class Hotel {
         if (checkOutDate.getDayOfMonth() == 1)
             return false;
         
-        // Ensure check-in is not on the 31st of the month (assuming a month with 31 days)
+        // Ensure check-in is not on the 31st of the month
         if (checkInDate.getDayOfMonth() == 31)
             return false;
-
-        // Bookings cannot be made outside of the defined period for the month (1 to 31)
-        if (checkInDate.getDayOfMonth() < 1 || checkOutDate.getDayOfMonth() > 31)
-            return false;
-
-        return !checkOutDate.isBefore(checkInDate) && !checkOutDate.isEqual(checkInDate);
+    
+        return !checkOutDate.isBefore(checkInDate);
     }
+    
 
     private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         for (Reservation res : reservations) {
