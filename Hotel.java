@@ -244,9 +244,11 @@ public class Hotel {
             if (isRoomAvailable(room, checkInDate, checkOutDate)) {
                 Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room);
                 reservations.add(reservation);
+                room.addReservation(reservation);
                 return reservation;
             }
         }
         return null; // No available rooms
     }
+
 }

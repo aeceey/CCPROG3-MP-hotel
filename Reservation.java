@@ -58,14 +58,4 @@ public class Reservation {
         return (int) (endDate.toEpochDay() - startDate.toEpochDay());
     }
 
-    public String toString() {
-        return "Reservation{" +
-                "guestName='" + guestName + '\'' +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                ", room=" + room +
-                ", totalPrice=" + totalPrice +
-                ", breakdownCost=" + breakdownCost +
-                '}';
-    }
 }

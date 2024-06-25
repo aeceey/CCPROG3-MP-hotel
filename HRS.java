@@ -200,7 +200,6 @@ public class HRS {
         Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate);
         if (reservation != null) {
             System.out.println("Booking successful!");
-            System.out.println(reservation);
         } else {
             System.out.println("No available rooms for the selected dates.");
         }
@@ -244,4 +243,5 @@ public class HRS {
         }
         return null;
     }
-}
+
+    }
