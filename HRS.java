@@ -28,6 +28,7 @@ public class HRS {
      * 
      * @param name - the name of the hotel
      * @param roomCount - the number of rooms in the hotel
+     * @param scanner  the scanner object for user input
      */
     public void createHotel(String name, int roomCount, Scanner scanner) {
         if (roomCount < 1 || roomCount > 50) {

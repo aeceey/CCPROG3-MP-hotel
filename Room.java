@@ -99,6 +99,13 @@ public class Room {
         this.reservations.remove(reservation);
     }
 
+/**
+     * Checks if the room is available on a specified date.
+     * If room has no reservations on said date, then it is available.
+     *
+     * @param date the date to check
+     * @return true if the room is available, false otherwise
+     */
     public boolean isAvailable(LocalDate date) {
         for (Reservation res : this.reservations) {
             if (!date.isBefore(res.getCheckInDate()) && date.isBefore(res.getCheckOutDate())) {

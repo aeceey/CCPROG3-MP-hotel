@@ -1,6 +1,15 @@
 import java.util.Scanner;
 
+
+/**
+ * This is the driver class that contains the main method of the system.
+ */
 public class Driver {
+    /**
+     * The main method is the entry point of the system.
+     * 
+     * @param args default arguments
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         HRS hrs = new HRS();

@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.time.LocalDate;
 
+/**
+ * The Hotel class represents a hotel, managing the rooms and reservations.
+ */
 public class Hotel {
     /**
      * The name of the hotel.
