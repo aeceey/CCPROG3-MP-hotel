@@ -7,18 +7,17 @@ public class Hotel {
     private double basePrice;
     private ArrayList<Room> rooms;
     private ArrayList<Reservation> reservations;
-    private int nextRoomNumber; // New field to track the next room number
-    private boolean hasBookings;
-    private HRS hrs; // Reference to HRS instance
+    private int nextRoomNumber;
+    private HRS hrs;
 
     public Hotel(String name, int roomCount, HRS hrs) {
         this.name = name;
         this.roomCount = roomCount;
-        this.basePrice = 1299.0; // Automatically assigning base price to 1299
+        this.basePrice = 1299.0;
         this.rooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
-        this.nextRoomNumber = 1; // Initialize to 1 for sequential room numbering
-        this.hrs = hrs; // Set the HRS instance reference
+        this.nextRoomNumber = 1;
+        this.hrs = hrs;
 
         for (int i = 1; i <= roomCount; i++) {
             String roomName = name + String.format("%02d", nextRoomNumber++);
@@ -38,18 +37,18 @@ public class Hotel {
             System.out.println("Hotel name changed to: " + name);
         }
     }
-    
 
     public int getRoomCount() {
         return roomCount;
     }
-        public void setRoomCount(int roomCount) {
-            if (roomCount > 50) {
-                System.out.println("Cannot set room count more than 50" );
-                return;
-            }
-            this.roomCount = roomCount;
+
+    public void setRoomCount(int roomCount) {
+        if (roomCount > 50) {
+            System.out.println("Cannot set room count more than 50.");
+            return;
         }
+        this.roomCount = roomCount;
+    }
 
     public double getBasePrice() {
         return basePrice;
@@ -65,7 +64,6 @@ public class Hotel {
             return;
         }
         this.basePrice = basePrice;
-        // Update the price of all rooms
         for (Room room : rooms) {
             room.setPrice(basePrice);
         }
@@ -80,10 +78,6 @@ public class Hotel {
         return reservations;
     }
 
-    /**
-     * ADD ROOM METHOD
-     * @return
-     */
     public String addRoom() {
         if (rooms.size() >= 50) {
             return "Room count cannot be more than 50.";
@@ -94,10 +88,6 @@ public class Hotel {
         return "Room added: " + newRoomName;
     }
 
-    /**
-     * REMOVE ROOM METHOD
-     * @return
-     */
     public String removeRoom(String roomName) {
         Room roomToRemove = null;
         for (Room room : rooms) {
@@ -128,17 +118,12 @@ public class Hotel {
         if (reservationToRemove == null) {
             return "No reservation found for the given guest and check-in date.";
         } else {
-            // Remove the reservation from the hotel's list
             reservations.remove(reservationToRemove);
-            
-            // Remove the reservation from the room
             Room room = reservationToRemove.getRoom();
             room.removeReservation(reservationToRemove);
-            
             return "Reservation removed for " + guestName + " on " + checkInDate;
         }
     }
-    
 
     public void displayRooms() {
         for (Room room : rooms) {
@@ -146,10 +131,6 @@ public class Hotel {
         }
     }
 
-    /**
-     * CALCULATES EARNING per?
-     * @return
-     */
     public double calculateEarnings() {
         double earnings = 0;
         LocalDate now = LocalDate.now();
@@ -161,7 +142,6 @@ public class Hotel {
         return earnings;
     }
 
-    // Get total number of available and booked rooms for a selected date
     public void getRoomAvailability(LocalDate date) {
         System.out.println("Availability for the date: " + date);
         for (Room room : rooms) {
@@ -173,9 +153,7 @@ public class Hotel {
             }
         }
     }
-    
 
-    // Get information about a specific room
     public void getRoomInfo(String roomName) {
         Room room = null;
         for (Room r : rooms) {
@@ -205,7 +183,6 @@ public class Hotel {
         }
     }
 
-    // Get information about a specific reservation
     public void getReservationInfo(String guestName, LocalDate checkInDate) {
         Reservation reservation = null;
         for (Reservation res : reservations) {
@@ -226,33 +203,24 @@ public class Hotel {
         System.out.println("Price Breakdown per Night:");
         LocalDate date = reservation.getCheckInDate();
         while (date.isBefore(reservation.getCheckOutDate())) {
-        System.out.println(date + ": " + reservation.getRoom().getPrice());            
-        date = date.plusDays(1);
+            System.out.println(date + ": " + reservation.getRoom().getPrice());
+            date = date.plusDays(1);
         }
     }
 
-
     public boolean isValidDateRange(LocalDate checkInDate, LocalDate checkOutDate) {
-        // Ensure check-out is not on the 1st of the month
         if (checkOutDate.getDayOfMonth() == 1)
             return false;
-        
-        // Ensure check-in is not on the 31st of the month
         if (checkInDate.getDayOfMonth() == 31)
             return false;
-    
         return !checkOutDate.isBefore(checkInDate);
     }
-    
 
     private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         for (Reservation res : reservations) {
             if (res.getRoom().equals(room)) {
-                // Check if the new reservation overlaps with existing ones
-                // The new check-in date should be on or after the existing check-out date
-                // OR the new check-out date should be on or before the existing check-in date
-                if (!(checkInDate.compareTo(res.getCheckOutDate()) >= 0 || 
-                      checkOutDate.compareTo(res.getCheckInDate()) <= 0)) {
+                if (!(checkInDate.compareTo(res.getCheckOutDate()) >= 0 ||
+                        checkOutDate.compareTo(res.getCheckInDate()) <= 0)) {
                     return false;
                 }
             }
@@ -265,7 +233,7 @@ public class Hotel {
             System.out.println("Invalid date range. Check-out date must be after check-in date.");
             return null;
         }
-    
+
         System.out.println("Searching for available rooms from " + checkInDate + " to " + checkOutDate);
         for (Room room : rooms) {
             System.out.println("Checking room: " + room.getName());
@@ -277,7 +245,6 @@ public class Hotel {
                 return reservation;
             } else {
                 System.out.println("Room " + room.getName() + " is not available for " + checkInDate + " to " + checkOutDate);
-                // Print existing reservations for this room
                 for (Reservation res : reservations) {
                     if (res.getRoom().equals(room)) {
                         System.out.println("  Existing reservation: " + res.getCheckInDate() + " to " + res.getCheckOutDate());
@@ -286,16 +253,6 @@ public class Hotel {
             }
         }
         System.out.println("No available rooms found for the requested dates.");
-        return null; // No available rooms
+        return null;
     }
-
-    public boolean hasBookings() {
-        return !reservations.isEmpty();
-    }
-    
-    public void setHasBookings(boolean hasBookings) {
-        this.hasBookings = hasBookings;
-    }
-    
-
 }

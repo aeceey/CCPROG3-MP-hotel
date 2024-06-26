@@ -131,11 +131,10 @@ public class HRS {
     
             switch (choice) {
                 case 1:
-                System.out.print("Enter new hotel name: ");
-                String newName = scanner.nextLine();
-                hotel.setName(newName); // setName will handle the message
-                break;
-            
+                    System.out.print("Enter new hotel name: ");
+                    String newName = scanner.nextLine();
+                    hotel.setName(newName); // setName will handle the message
+                    break;
                 case 2:
                     System.out.println(hotel.addRoom());
                     break;
@@ -165,16 +164,16 @@ public class HRS {
                     if (!hotel.getReservations().isEmpty()) {
                         System.out.println("Cannot remove the hotel as it has existing reservations.");
                     } else {
-                            System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
-                            String confirmation = scanner.nextLine();
-                    if (confirmation.equalsIgnoreCase("yes")) {
-                             removeHotel(name);
-                        return; // Exit the manage menu after removing the hotel
-                    } else {
-                             System.out.println("Hotel removal canceled.");
-        }
-    }
-    break;
+                        System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
+                        String confirmation = scanner.nextLine();
+                        if (confirmation.equalsIgnoreCase("yes")) {
+                            removeHotel(name);
+                            return; // Exit the manage menu after removing the hotel
+                        } else {
+                            System.out.println("Hotel removal canceled.");
+                        }
+                    }
+                    break;
                 case 8:
                     return; // Exit the manage menu
                 default:
@@ -182,7 +181,6 @@ public class HRS {
             }
         }
     }
-    
 
     public void simulateBooking(Scanner scanner) {
         System.out.print("Enter hotel name: ");
@@ -231,9 +229,9 @@ public class HRS {
                 isValid = true;
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid date format. Please enter date in yyyy-mm-dd format.");
-                // Optionally, you can log the exception or handle it further as needed.
             }
         }
+        
         return date;
     }
 
@@ -254,5 +252,4 @@ public class HRS {
         }
         return null;
     }
-
-    }
+}

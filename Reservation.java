@@ -47,15 +47,14 @@ public class Reservation {
         int nights = calculateNightsBetween(checkInDate, checkOutDate);
         double nightlyRate = room.getPrice();
         totalPrice = 0;
-    
+
         for (int i = 0; i < nights; i++) {
             breakdownCost.add(nightlyRate);
             totalPrice += nightlyRate;
         }
     }
-    
+
     private int calculateNightsBetween(LocalDate startDate, LocalDate endDate) {
         return (int) startDate.until(endDate).getDays();
     }
-
 }

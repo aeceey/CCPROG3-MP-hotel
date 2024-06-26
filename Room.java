@@ -37,7 +37,6 @@ public class Room {
         return reservations;
     }
 
-
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
@@ -46,14 +45,12 @@ public class Room {
         this.reservations.remove(reservation);
     }
 
-  // Update the isAvailable method to check against the room's reservations
-  public boolean isAvailable(LocalDate date) {
-    for (Reservation res : this.reservations) {
-        if (!date.isBefore(res.getCheckInDate()) && date.isBefore(res.getCheckOutDate())) {
-            return false;
+    public boolean isAvailable(LocalDate date) {
+        for (Reservation res : this.reservations) {
+            if (!date.isBefore(res.getCheckInDate()) && date.isBefore(res.getCheckOutDate())) {
+                return false;
+            }
         }
+        return true;
     }
-    return true;
 }
-    
-    }
