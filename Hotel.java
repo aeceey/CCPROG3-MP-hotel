@@ -108,6 +108,8 @@ public class Hotel {
         }
         if (roomToRemove == null) {
             return "No room exists with the given name.";
+        } else if (!roomToRemove.getReservations().isEmpty()) {
+            return "Cannot remove room as it has an existing reservation.";
         } else {
             rooms.remove(roomToRemove);
             roomCount--;
@@ -223,9 +225,9 @@ public class Hotel {
         System.out.println("Total Price: " + reservation.getTotalPrice());
         System.out.println("Price Breakdown per Night:");
         LocalDate date = reservation.getCheckInDate();
-        while (!date.isAfter(reservation.getCheckOutDate())) {
-            System.out.println(date + ": " + reservation.getRoom().getPrice());
-            date = date.plusDays(1);
+        while (date.isBefore(reservation.getCheckOutDate())) {
+        System.out.println(date + ": " + reservation.getRoom().getPrice());            
+        date = date.plusDays(1);
         }
     }
 
@@ -245,9 +247,14 @@ public class Hotel {
 
     private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         for (Reservation res : reservations) {
-            if (res.getRoom().equals(room) &&
-                !(checkOutDate.isBefore(res.getCheckInDate()) || checkInDate.isAfter(res.getCheckOutDate()))) {
-                return false;
+            if (res.getRoom().equals(room)) {
+                // Check if the new reservation overlaps with existing ones
+                // The new check-in date should be on or after the existing check-out date
+                // OR the new check-out date should be on or before the existing check-in date
+                if (!(checkInDate.compareTo(res.getCheckOutDate()) >= 0 || 
+                      checkOutDate.compareTo(res.getCheckInDate()) <= 0)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -259,14 +266,26 @@ public class Hotel {
             return null;
         }
     
+        System.out.println("Searching for available rooms from " + checkInDate + " to " + checkOutDate);
         for (Room room : rooms) {
+            System.out.println("Checking room: " + room.getName());
             if (isRoomAvailable(room, checkInDate, checkOutDate)) {
                 Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room);
                 reservations.add(reservation);
                 room.addReservation(reservation);
+                System.out.println("Booking successful for room: " + room.getName());
                 return reservation;
+            } else {
+                System.out.println("Room " + room.getName() + " is not available for " + checkInDate + " to " + checkOutDate);
+                // Print existing reservations for this room
+                for (Reservation res : reservations) {
+                    if (res.getRoom().equals(room)) {
+                        System.out.println("  Existing reservation: " + res.getCheckInDate() + " to " + res.getCheckOutDate());
+                    }
+                }
             }
         }
+        System.out.println("No available rooms found for the requested dates.");
         return null; // No available rooms
     }
 

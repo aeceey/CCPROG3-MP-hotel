@@ -55,7 +55,7 @@ public class Reservation {
     }
     
     private int calculateNightsBetween(LocalDate startDate, LocalDate endDate) {
-        return (int) (endDate.toEpochDay() - startDate.toEpochDay());
+        return (int) startDate.until(endDate).getDays();
     }
 
 }

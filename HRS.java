@@ -44,11 +44,14 @@ public class HRS {
         }
         if (hotelToRemove == null) {
             System.out.println("No hotel exists with the given name.");
+        } else if (!hotelToRemove.getReservations().isEmpty()) {
+            System.out.println("Cannot remove hotel as it has existing reservations.");
         } else {
             hotels.remove(hotelToRemove);
             System.out.println("Hotel removed: " + name);
         }
     }
+    
     public void viewHotel(String name) {
         Hotel hotelToView = null;
         for (Hotel hotel : hotels) {
@@ -159,15 +162,19 @@ public class HRS {
                     hotel.displayRooms();
                     break;
                 case 7:
-                    System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
-                    String confirmation = scanner.nextLine();
+                    if (!hotel.getReservations().isEmpty()) {
+                        System.out.println("Cannot remove the hotel as it has existing reservations.");
+                    } else {
+                            System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
+                            String confirmation = scanner.nextLine();
                     if (confirmation.equalsIgnoreCase("yes")) {
-                        removeHotel(name);
+                             removeHotel(name);
                         return; // Exit the manage menu after removing the hotel
                     } else {
-                        System.out.println("Hotel removal canceled.");
-                    }
-                    break;
+                             System.out.println("Hotel removal canceled.");
+        }
+    }
+    break;
                 case 8:
                     return; // Exit the manage menu
                 default:

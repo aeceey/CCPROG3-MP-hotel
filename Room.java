@@ -47,13 +47,13 @@ public class Room {
     }
 
   // Update the isAvailable method to check against the room's reservations
-    public boolean isAvailable(LocalDate date) {
-            for (Reservation res : this.reservations) {
-                if (!date.isBefore(res.getCheckInDate()) && !date.isAfter(res.getCheckOutDate())) {
-                    return false;
-                }
-            }
-        return true;
+  public boolean isAvailable(LocalDate date) {
+    for (Reservation res : this.reservations) {
+        if (!date.isBefore(res.getCheckInDate()) && date.isBefore(res.getCheckOutDate())) {
+            return false;
+        }
     }
+    return true;
+}
     
     }
