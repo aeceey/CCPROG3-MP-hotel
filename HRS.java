@@ -3,54 +3,38 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- *  The HRS class, short for Hotel Reservation System, manages a list of Hotels.
- *  Creation, Management, Viewing, and Booking of Hotels happen in this class.
- *  
- */
-
 public class HRS {
-    /**
-     * The list of hotels managed by the HRS.
-     */
     private ArrayList<Hotel> hotels;
 
-
-    /**
-     *  This is a constructor for the HRS class which initializes the list of hotels.
-     */
     public HRS() {
         this.hotels = new ArrayList<>(); // Initialize list of hotels
     }
 
-    /**
-     * This method ceates a new Hotel following the specified name and room count.
-     * 
-     * @param name - the name of the hotel
-     * @param roomCount - the number of rooms in the hotel
-     * @param scanner  the scanner object for user input
-     */
-    public void createHotel(String name, int roomCount, Scanner scanner) {
-        if (roomCount < 1 || roomCount > 50) {
-            System.out.println("Room count must be between 1 and 50.");
+    public void createHotel(String name, Scanner scanner) {
+        System.out.print("Enter the number of Standard rooms: ");
+        int standardRoomCount = scanner.nextInt();
+        System.out.print("Enter the number of Deluxe rooms: ");
+        int deluxeRoomCount = scanner.nextInt();
+        System.out.print("Enter the number of Executive rooms: ");
+        int executiveRoomCount = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        int totalRoomCount = standardRoomCount + deluxeRoomCount + executiveRoomCount;
+    
+        if (totalRoomCount < 1 || totalRoomCount > 50) {
+            System.out.println("Total room count must be between 1 and 50.");
             return;
         }
         if (isHotelNameTaken(name)) {
             System.out.println("A hotel with this name already exists.");
             return;
         }
-
-        Hotel newHotel = new Hotel(name, roomCount, this); 
+    
+        Hotel newHotel = new Hotel(name, standardRoomCount, deluxeRoomCount, executiveRoomCount, this); 
         hotels.add(newHotel);
-        System.out.println("Hotel created: " + name + " with " + roomCount + " rooms and base price 1299");
+        System.out.println("Hotel created: " + name + " with " + totalRoomCount + " rooms (Standard: " + standardRoomCount + ", Deluxe: " + deluxeRoomCount + ", Executive: " + executiveRoomCount + ") and base price 1299");
     }
 
-    /**
-     * This method checks if the name of the hotel already exists as it has to be unique
-     * 
-     * @param name - the name of hotel to be checked
-     * @return true if the name is indeed taken, false if not
-     */
     public boolean isHotelNameTaken(String name) {
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {
@@ -60,12 +44,6 @@ public class HRS {
         return false;
     }
 
-
-    /**
-     * This method removes the hotel name given if it exists and has no reservations under it.
-     * 
-     * @param name - the name of hotel to be removed
-     */
     public void removeHotel(String name) {
         Hotel hotelToRemove = null;
         for (Hotel hotel : hotels) {
@@ -84,12 +62,6 @@ public class HRS {
         }
     }
 
-
-    /**
-     * This method displays the information about a given hotel.
-     * 
-     * @param name - the name of the hotel to be viewed
-     */
     public void viewHotel(String name) {
         Hotel hotelToView = null;
         for (Hotel hotel : hotels) {
@@ -146,14 +118,6 @@ public class HRS {
         }
     }
 
-    /**
-     * This method is responsible for managing the hotel. It can do serveral functions such as 
-     * changing its name, adding and removing hotel rooms, updating the base price, removing reservations,
-     * viewing the room names, and removing the hotel itself.
-     * 
-     * @param name - the name of the hotel to be managed
-     * @param scanner - the scanner object for the user input
-     */
     public void manageHotel(String name, Scanner scanner) {
         Hotel hotel = findHotelByName(name);
         if (hotel == null) {
@@ -181,8 +145,30 @@ public class HRS {
                     String newName = scanner.nextLine();
                     hotel.setName(newName); 
                     break;
-                case 2:
-                    System.out.println(hotel.addRoom());
+                    case 2:
+                    System.out.println("Select room type to add:");
+                    System.out.println("[1] Standard");
+                    System.out.println("[2] Deluxe");
+                    System.out.println("[3] Executive");
+                    System.out.print("Enter your choice: ");
+                    int roomTypeChoice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    Room.RoomType roomType;
+                    switch (roomTypeChoice) {
+                        case 1:
+                            roomType = Room.RoomType.STANDARD;
+                            break;
+                        case 2:
+                            roomType = Room.RoomType.DELUXE;
+                            break;
+                        case 3:
+                            roomType = Room.RoomType.EXECUTIVE;
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Room not added.");
+                            continue; // Go back to the main menu
+                    }
+                    System.out.println(hotel.addRoom(roomType));
                     break;
                 case 3:
                     System.out.print("Enter room name to remove: ");
@@ -228,13 +214,6 @@ public class HRS {
         }
     }
 
-
-    /**
-     * This method is responsible for the booking process. It prompts the user to enter the
-     * name of the guest, the date to be booked, and create the reservation.
-     * 
-     * @param scanner - the scanner object for the user input
-     */
     public void simulateBooking(Scanner scanner) {
         System.out.print("Enter hotel name: ");
         String hotelName = scanner.nextLine();
@@ -267,12 +246,6 @@ public class HRS {
         }
     }
 
-    /**
-     * This method tells the user to input a valid date.
-     * 
-     * @param dateType - the type of date, if it is for check-in or check-out
-     * @return validated LocalDate or null if invalid
-     */
     private LocalDate promptForDate(String dateType) {
         Scanner scanner = new Scanner(System.in);
         LocalDate date = null;
@@ -293,13 +266,6 @@ public class HRS {
         return date;
     }
 
-    /**
-     * This method chekcs the provided date if it is in the range
-     * of the defined booking perio
-     * 
-     * @param date - the date to be checked
-     * @return true if the date is within the booking period, false if it does not
-     */
     private boolean isValidBookingDate(LocalDate date) {
         LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1); // Start of the current month
         LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth()); // End of the current month
@@ -307,12 +273,6 @@ public class HRS {
         return !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
     }
 
-    /**
-     * This method finds a hotel in the list using its name.
-     * 
-     * @param name - the name of the hotel to be searched
-     * @return the Hotel if it is found or null if note found
-     */
     private Hotel findHotelByName(String name) {
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {

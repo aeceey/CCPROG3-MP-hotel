@@ -1,15 +1,8 @@
 import java.util.Scanner;
 
 
-/**
- * This is the driver class that contains the main method of the system.
- */
 public class Driver {
-    /**
-     * The main method is the entry point of the system.
-     * 
-     * @param args default arguments
-     */
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         HRS hrs = new HRS();
@@ -29,10 +22,7 @@ public class Driver {
                 case 1:
                     System.out.print("Enter hotel name: ");
                     String name = scanner.nextLine();
-                    System.out.print("Enter number of rooms: ");
-                    int roomCount = scanner.nextInt();
-                    scanner.nextLine(); 
-                    hrs.createHotel(name, roomCount, scanner);
+                    hrs.createHotel(name, scanner);
                     break;
                 case 2:
                     System.out.print("Enter hotel name: ");

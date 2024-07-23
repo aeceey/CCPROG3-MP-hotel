@@ -2,110 +2,66 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The Room class represents a room in a hotel.
- */
-public class Room {
-    /**
-     * The name of the room.
-     */
-    private String name;
-    /**
-     * The price per night for the room.
-     */
-    private double price;
-    /**
-     * The list of reservations for the room.
-     */
-    private List<Reservation> reservations;
 
-     /**
-     * The constructor for the Room class. It creates a Room object 
-     * with the given name and price.
-     *
-     * @param name - the name of the room
-     * @param price - the price per night for the room
-     */
-    public Room(String name, double price) {
+public class Room {
+    private String name;
+    private double price;
+    private List<Reservation> reservations;
+    private RoomType type;
+
+    public enum RoomType {
+        STANDARD, DELUXE, EXECUTIVE
+    }
+
+    public Room(String name, double basePrice, RoomType type) {
         this.name = name;
-        this.price = price;
+        this.type = type;
+        setPrice(basePrice);
         this.reservations = new ArrayList<>();
     }
 
-    /**
-     * A getter that gets the name of the room.
-     * 
-     * @return the name of hte room
-     */
+    public RoomType getType() {
+        return type;
+    }
+
     public String getName() {
         return name;
     }
 
-    /**
-     * A setter that sets a new name for the room.
-     *
-     * @param name - the new name of the room
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * A getter that gets the price per night of the room.
-     * @return the price per night for the room
-     */
     public double getPrice() {
         return price;
     }
 
-    /**
-     * A setter that sets a new price per night for the room.
-     *
-     * @param price - the new price per night
-     */
-    public void setPrice(double price) {
-        if (price < 100.0) {
-            System.out.println("Room price must be greater than or equal to 100");
-            return;
+    public void setPrice(double basePrice) {
+        switch (type) {
+            case STANDARD:
+                this.price = basePrice;
+                break;
+            case DELUXE:
+                this.price = basePrice * 1.2;
+                break;
+            case EXECUTIVE:
+                this.price = basePrice * 1.35;
+                break;
         }
-        this.price = price;
     }
 
-    /**
-     * A getter that gets the list of reservations for the room.
-     *
-     * @return the list of reservations
-     */
     public List<Reservation> getReservations() {
         return reservations;
     }
 
-     /**
-     * This method adds a reservation to the room.
-     *
-     * @param reservation - the reservation to add
-     */
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
 
-
-     /**
-     * This method adds a reservation to the room.
-     *
-     * @param reservation - the reservation to add
-     */
     public void removeReservation(Reservation reservation) {
         this.reservations.remove(reservation);
     }
 
-/**
-     * Checks if the room is available on a specified date.
-     * If room has no reservations on said date, then it is available.
-     *
-     * @param date the date to check
-     * @return true if the room is available, false otherwise
-     */
     public boolean isAvailable(LocalDate date) {
         for (Reservation res : this.reservations) {
             if (!date.isBefore(res.getCheckInDate()) && date.isBefore(res.getCheckOutDate())) {
