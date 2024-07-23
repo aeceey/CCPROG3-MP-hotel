@@ -255,31 +255,23 @@ public class Hotel {
         return true;
     }
 
-    public Reservation simulateBooking(String guestName, LocalDate checkInDate, LocalDate checkOutDate) {
+    public Reservation simulateBooking(String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room.RoomType roomType) {
         if (!isValidDateRange(checkInDate, checkOutDate)) {
             System.out.println("Invalid date range. Check-out date must be after check-in date.");
             return null;
         }
-
-        System.out.println("Searching for available rooms from " + checkInDate + " to " + checkOutDate);
+    
+        System.out.println("Searching for available " + roomType + " rooms from " + checkInDate + " to " + checkOutDate);
         for (Room room : rooms) {
-            System.out.println("Checking room: " + room.getName());
-            if (isRoomAvailable(room, checkInDate, checkOutDate)) {
+            if (room.getType() == roomType && isRoomAvailable(room, checkInDate, checkOutDate)) {
                 Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room);
                 reservations.add(reservation);
                 room.addReservation(reservation);
                 System.out.println("Booking successful for room: " + room.getName());
                 return reservation;
-            } else {
-                System.out.println("Room " + room.getName() + " is not available for " + checkInDate + " to " + checkOutDate);
-                for (Reservation res : reservations) {
-                    if (res.getRoom().equals(room)) {
-                        System.out.println("  Existing reservation: " + res.getCheckInDate() + " to " + res.getCheckOutDate());
-                    }
-                }
             }
         }
-        System.out.println("No available rooms found for the requested dates.");
+        System.out.println("No available " + roomType + " rooms found for the requested dates.");
         return null;
     }
 }

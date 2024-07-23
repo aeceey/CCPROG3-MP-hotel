@@ -222,27 +222,53 @@ public class HRS {
             System.out.println("No hotel exists with the given name.");
             return;
         }
-
+    
         System.out.print("Enter guest name: ");
         String guestName = scanner.nextLine();
-
+    
         LocalDate checkInDate = promptForDate("check-in");
         if (checkInDate == null || !isValidBookingDate(checkInDate)) {
             System.out.println("Invalid check-in date. Bookings cannot be made outside of the defined period for the month.");
             return;
         }
-
+    
         LocalDate checkOutDate = promptForDate("check-out");
         if (checkOutDate == null || !isValidBookingDate(checkOutDate)) {
             System.out.println("Invalid check-out date. Bookings cannot be made outside of the defined period for the month.");
             return;
         }
-
-        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate);
+    
+        System.out.println("Select room type:");
+        System.out.println("[1] Standard");
+        System.out.println("[2] Deluxe");
+        System.out.println("[3] Executive");
+        System.out.print("Enter your choice: ");
+        int roomTypeChoice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        Room.RoomType roomType;
+        switch (roomTypeChoice) {
+            case 1:
+                roomType = Room.RoomType.STANDARD;
+                break;
+            case 2:
+                roomType = Room.RoomType.DELUXE;
+                break;
+            case 3:
+                roomType = Room.RoomType.EXECUTIVE;
+                break;
+            default:
+                System.out.println("Invalid room type choice. Booking cancelled.");
+                return;
+        }
+    
+        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate, roomType);
         if (reservation != null) {
             System.out.println("Booking successful!");
+            System.out.println("Room type: " + roomType);
+            System.out.println("Total price: " + reservation.getTotalPrice());
         } else {
-            System.out.println("No available rooms for the selected dates.");
+            System.out.println("No available rooms of type " + roomType + " for the selected dates.");
         }
     }
 

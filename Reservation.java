@@ -11,14 +11,20 @@ public class Reservation {
     private Room room;
     private double totalPrice;
     private List<Double> breakdownCost; 
+    private Room.RoomType roomType;
 
     public Reservation(String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room room) {
         this.guestName = guestName;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.room = room;
+        this.roomType = room.getType();
         this.breakdownCost = new ArrayList<>();
         calculateTotalPrice();
+    }
+
+    public Room.RoomType getRoomType() {
+        return roomType;
     }
 
     public String getGuestName() {
