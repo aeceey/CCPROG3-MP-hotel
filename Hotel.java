@@ -255,7 +255,7 @@ public class Hotel {
         return true;
     }
 
-    public Reservation simulateBooking(String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room.RoomType roomType) {
+    public Reservation simulateBooking(String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room.RoomType roomType, String discountCode) {
         if (!isValidDateRange(checkInDate, checkOutDate)) {
             System.out.println("Invalid date range. Check-out date must be after check-in date.");
             return null;
@@ -264,11 +264,13 @@ public class Hotel {
         System.out.println("Searching for available " + roomType + " rooms from " + checkInDate + " to " + checkOutDate);
         for (Room room : rooms) {
             if (room.getType() == roomType && isRoomAvailable(room, checkInDate, checkOutDate)) {
-                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room);
+                Reservation reservation = new Reservation(guestName, checkInDate, checkOutDate, room, discountCode);
                 reservations.add(reservation);
                 room.addReservation(reservation);
                 System.out.println("Booking successful for room: " + room.getName());
                 return reservation;
+        
+                
             }
         }
         System.out.println("No available " + roomType + " rooms found for the requested dates.");

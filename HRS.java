@@ -262,11 +262,20 @@ public class HRS {
                 return;
         }
     
-        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate, roomType);
+        System.out.print("Enter discount code (or press Enter for no discount): ");
+        String discountCode = scanner.nextLine().trim();
+        if (discountCode.isEmpty()) {
+            discountCode = null;
+        }
+    
+        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate, roomType, discountCode);
         if (reservation != null) {
             System.out.println("Booking successful!");
             System.out.println("Room type: " + roomType);
             System.out.println("Total price: " + reservation.getTotalPrice());
+            if (discountCode != null) {
+                System.out.println("Discount applied: " + discountCode);
+            }
         } else {
             System.out.println("No available rooms of type " + roomType + " for the selected dates.");
         }
