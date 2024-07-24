@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Room {
@@ -69,5 +71,61 @@ public class Room {
             }
         }
         return true;
+    }
+
+    public double calculateTotalPrice(LocalDate checkIn, LocalDate checkOut, double basePrice) {
+        double total = 0.0;
+        LocalDate currentDate = checkIn;
+    
+        System.out.println("Price Breakdown:");
+        
+        // Iterate over each date from check-in up to but not including checkout date
+        while (currentDate.isBefore(checkOut)) {
+            double multiplier = getMultiplierForDate(currentDate);
+            double dailyPrice = basePrice * multiplier;
+            total += dailyPrice;
+            
+            System.out.printf("Date: %s, Multiplier: %.2f, Daily Price: %.2f, Accumulated Total: %.2f%n",
+                              currentDate, multiplier, dailyPrice, total);
+            
+            currentDate = currentDate.plusDays(1);
+        }
+    
+        return total;
+    }
+    
+    
+
+    private double getMultiplierForDate(LocalDate date) {
+        int dayOfMonth = date.getDayOfMonth();
+        
+        if ((dayOfMonth >= 5 && dayOfMonth <= 7) ||
+            (dayOfMonth >= 12 && dayOfMonth <= 14) ||
+            (dayOfMonth >= 19 && dayOfMonth <= 21) ||
+            (dayOfMonth >= 26 && dayOfMonth <= 28)) {
+            return 1.20; // 120%
+        } else if (dayOfMonth == 1 || dayOfMonth == 8 || dayOfMonth == 15 || dayOfMonth == 22 || dayOfMonth == 29) {
+            return 0.80; // 80%
+        } else if (dayOfMonth == 2 || dayOfMonth == 9 || dayOfMonth == 16 || dayOfMonth == 23 || dayOfMonth == 30) {
+            return 0.90; // 90%
+        } else {
+            return 1.00; // 100%
+        }
+    }
+    
+    private boolean isInDateRange(int dayOfMonth, int start, int end) {
+        return dayOfMonth >= start && dayOfMonth <= end;
+    }
+    
+
+    private double getBasePriceForType(double basePrice) {
+        switch (type) {
+            case DELUXE:
+                return basePrice * 1.2;
+            case EXECUTIVE:
+                return basePrice * 1.35;
+            default:
+                return basePrice;
+        }
     }
 }

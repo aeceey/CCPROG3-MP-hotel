@@ -22,7 +22,8 @@ public class Reservation {
         this.roomType = room.getType();
         this.breakdownCost = new ArrayList<>();
         this.discountCode = discountCode;
-        calculateTotalPrice();
+        this.totalPrice = room.calculateTotalPrice(checkInDate, checkOutDate, room.getPrice());
+        applyDiscount();
     }
 
     public Room.RoomType getRoomType() {

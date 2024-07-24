@@ -83,6 +83,7 @@ public class Hotel {
     public ArrayList<Reservation> getReservations() {
         return reservations;
     }
+    
 
     public String addRoom(Room.RoomType type) {
         if (rooms.size() >= 50) {

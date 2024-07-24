@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Scanner;
 
 
@@ -46,4 +47,14 @@ public class Driver {
             }
         }
     }
+
+    public static void testPriceCalculation() {
+    Room room = new Room("TestRoom", 1299.0, Room.RoomType.STANDARD);
+    LocalDate checkIn = LocalDate.of(2024, 7, 1);  // Assuming July 1st, 2024
+    LocalDate checkOut = LocalDate.of(2024, 7, 10); // Checkout on 10th
+    
+    double totalPrice = room.calculateTotalPrice(checkIn, checkOut, room.getPrice());
+    
+    System.out.printf("Total price for stay from %s to %s: %.2f%n", checkIn, checkOut, totalPrice);
+}
 }
