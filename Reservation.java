@@ -2,17 +2,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Reservation {
-
     private String guestName;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private Room room;
     private double totalPrice;
-    private List<Double> breakdownCost; 
+    private List<Double> breakdownCost;
     private Room.RoomType roomType;
     private String discountCode;
+
 
     public Reservation(String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room room, String discountCode) {
         this.guestName = guestName;
@@ -26,40 +25,49 @@ public class Reservation {
         applyDiscount();
     }
 
+
     public Room.RoomType getRoomType() {
         return roomType;
     }
+
 
     public String getGuestName() {
         return guestName;
     }
 
+
     public LocalDate getCheckInDate() {
         return checkInDate;
     }
+
 
     public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
+
     public Room getRoom() {
         return room;
     }
+
 
     public double getTotalPrice() {
         return totalPrice;
     }
 
+
     public List<Double> getBreakdownCost() {
         return breakdownCost;
     }
+
 
     public String getDiscountCode() {
         return discountCode;
     }
 
+
     private void calculateTotalPrice() {
-        int nights = calculateNightsBetween(checkInDate, checkOutDate);
+        int nights = (int) checkInDate.until(checkOutDate).getDays();
         double nightlyRate = room.getPrice();
         totalPrice = 0;
 
@@ -75,7 +83,7 @@ public class Reservation {
         applyDiscount();
     }
 
-    private void applyDiscount() {
+   private void applyDiscount() {
         if (discountCode == null) {
             return;
         }
@@ -94,7 +102,10 @@ public class Reservation {
         }
     }
 
+
     private int calculateNightsBetween(LocalDate startDate, LocalDate endDate) {
         return (int) startDate.until(endDate).getDays();
     }
+
 }
+

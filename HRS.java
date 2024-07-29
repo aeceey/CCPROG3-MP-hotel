@@ -1,38 +1,26 @@
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class HRS {
     private ArrayList<Hotel> hotels;
 
     public HRS() {
-        this.hotels = new ArrayList<>(); // Initialize list of hotels
+        this.hotels = new ArrayList<>();
     }
 
-    public void createHotel(String name, Scanner scanner) {
-        System.out.print("Enter the number of Standard rooms: ");
-        int standardRoomCount = scanner.nextInt();
-        System.out.print("Enter the number of Deluxe rooms: ");
-        int deluxeRoomCount = scanner.nextInt();
-        System.out.print("Enter the number of Executive rooms: ");
-        int executiveRoomCount = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-    
+    public void createHotel(String name, int standardRoomCount, int deluxeRoomCount, int executiveRoomCount) {
         int totalRoomCount = standardRoomCount + deluxeRoomCount + executiveRoomCount;
-    
         if (totalRoomCount < 1 || totalRoomCount > 50) {
-            System.out.println("Total room count must be between 1 and 50.");
+            JOptionPane.showMessageDialog(null, "Error: Total room count must be between 1 and 50.", "Invalid Room Count", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (isHotelNameTaken(name)) {
-            System.out.println("A hotel with this name already exists.");
+            JOptionPane.showMessageDialog(null, "Error: A hotel with this name already exists.", "Duplicate Hotel Name", JOptionPane.ERROR_MESSAGE);
             return;
         }
-    
-        Hotel newHotel = new Hotel(name, standardRoomCount, deluxeRoomCount, executiveRoomCount, this); 
+        Hotel newHotel = new Hotel(name, standardRoomCount, deluxeRoomCount, executiveRoomCount, this);
         hotels.add(newHotel);
-        System.out.println("Hotel created: " + name + " with " + totalRoomCount + " rooms (Standard: " + standardRoomCount + ", Deluxe: " + deluxeRoomCount + ", Executive: " + executiveRoomCount + ") and base price 1299");
+        JOptionPane.showMessageDialog(null, "Hotel created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public boolean isHotelNameTaken(String name) {
@@ -45,275 +33,44 @@ public class HRS {
     }
 
     public void removeHotel(String name) {
-        Hotel hotelToRemove = null;
-        for (Hotel hotel : hotels) {
+        boolean removed = false;
+        for (int i = hotels.size() - 1; i >= 0; i--) {
+            Hotel hotel = hotels.get(i);
             if (hotel.getName().equals(name)) {
-                hotelToRemove = hotel;
-                break;
-            }
-        }
-        if (hotelToRemove == null) {
-            System.out.println("No hotel exists with the given name.");
-        } else if (!hotelToRemove.getReservations().isEmpty()) {
-            System.out.println("Cannot remove hotel as it has existing reservations.");
-        } else {
-            hotels.remove(hotelToRemove);
-            System.out.println("Hotel removed: " + name);
-        }
-    }
-
-    public void viewHotel(String name) {
-        Hotel hotelToView = null;
-        for (Hotel hotel : hotels) {
-            if (hotel.getName().equals(name)) {
-                hotelToView = hotel;
-                break;
-            }
-        }
-        if (hotelToView == null) {
-            System.out.println("No hotel exists with the given name.");
-        } else {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("High-level Hotel Information:");
-            System.out.println("Hotel Name: " + hotelToView.getName());
-            System.out.println("Total Rooms: " + hotelToView.getRoomCount());
-            System.out.println("Estimated Earnings for the Month: " + hotelToView.calculateEarnings());
-
-            while (true) {
-                System.out.println("\nAvailable Low-level Information:");
-                System.out.println("1. Total number of available and booked rooms for a selected date");
-                System.out.println("2. Information about a selected room");
-                System.out.println("3. Information about a selected reservation");
-                System.out.println("4. Exit");
-                System.out.print("Enter your choice: ");
-                int choice = scanner.nextInt();
-                scanner.nextLine(); 
-
-                switch (choice) {
-                    case 1:
-                        System.out.print("Enter date (yyyy-mm-dd): ");
-                        String dateStr = scanner.nextLine();
-                        LocalDate date = LocalDate.parse(dateStr);
-                        hotelToView.getRoomAvailability(date);
-                        break;
-                    case 2:
-                        System.out.print("Enter room name: ");
-                        String roomName = scanner.nextLine();
-                        hotelToView.getRoomInfo(roomName);
-                        break;
-                    case 3:
-                        System.out.print("Enter guest name: ");
-                        String guestName = scanner.nextLine();
-                        System.out.print("Enter check-in date (yyyy-mm-dd): ");
-                        String checkInDateStr = scanner.nextLine();
-                        LocalDate checkInDate = LocalDate.parse(checkInDateStr);
-                        hotelToView.getReservationInfo(guestName, checkInDate);
-                        break;
-                    case 4:
-                        return;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                if (hotel.getReservations().isEmpty()) {
+                    hotels.remove(i);
+                    removed = true;
+                    JOptionPane.showMessageDialog(null, "Hotel removed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error: Cannot remove hotel. It has existing reservations.", "Removal Failed", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-        }
-    }
-
-    public void manageHotel(String name, Scanner scanner) {
-        Hotel hotel = findHotelByName(name);
-        if (hotel == null) {
-            System.out.println("No hotel exists with the given name.");
-            return;
-        }
-    
-        while (true) {
-            System.out.println("\nManage Hotel: " + hotel.getName());
-            System.out.println("[1] Change Hotel Name");
-            System.out.println("[2] Add Room");
-            System.out.println("[3] Remove Room");
-            System.out.println("[4] Update Base Price");
-            System.out.println("[5] Remove Reservation");
-            System.out.println("[6] View Room Names");
-            System.out.println("[7] Remove Hotel");
-            System.out.println("[8] Exit");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); 
-    
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter new hotel name: ");
-                    String newName = scanner.nextLine();
-                    hotel.setName(newName); 
-                    break;
-                    case 2:
-                    System.out.println("Select room type to add:");
-                    System.out.println("[1] Standard");
-                    System.out.println("[2] Deluxe");
-                    System.out.println("[3] Executive");
-                    System.out.print("Enter your choice: ");
-                    int roomTypeChoice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
-                    Room.RoomType roomType;
-                    switch (roomTypeChoice) {
-                        case 1:
-                            roomType = Room.RoomType.STANDARD;
-                            break;
-                        case 2:
-                            roomType = Room.RoomType.DELUXE;
-                            break;
-                        case 3:
-                            roomType = Room.RoomType.EXECUTIVE;
-                            break;
-                        default:
-                            System.out.println("Invalid choice. Room not added.");
-                            continue; // Go back to the main menu
-                    }
-                    System.out.println(hotel.addRoom(roomType));
-                    break;
-                case 3:
-                    System.out.print("Enter room name to remove: ");
-                    String roomName = scanner.nextLine();
-                    System.out.println(hotel.removeRoom(roomName));
-                    break;
-                case 4:
-                    System.out.print("Enter new base price: ");
-                    double newBasePrice = scanner.nextDouble();
-                    scanner.nextLine(); 
-                    hotel.setBasePrice(newBasePrice);
-                    break;
-                case 5:
-                    System.out.print("Enter guest name: ");
-                    String guestName = scanner.nextLine();
-                    System.out.print("Enter check-in date (yyyy-mm-dd): ");
-                    String checkInDateStr = scanner.nextLine();
-                    LocalDate checkInDate = LocalDate.parse(checkInDateStr);
-                    System.out.println(hotel.removeReservation(guestName, checkInDate));
-                    break;
-                case 6:
-                    hotel.displayRooms();
-                    break;
-                case 7:
-                    if (!hotel.getReservations().isEmpty()) {
-                        System.out.println("Cannot remove the hotel as it has existing reservations.");
-                    } else {
-                        System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
-                        String confirmation = scanner.nextLine();
-                        if (confirmation.equalsIgnoreCase("yes")) {
-                            removeHotel(name);
-                            return; 
-                        } else {
-                            System.out.println("Hotel removal canceled.");
-                        }
-                    }
-                    break;
-                case 8:
-                    return; 
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-
-    public void simulateBooking(Scanner scanner) {
-        System.out.print("Enter hotel name: ");
-        String hotelName = scanner.nextLine();
-        Hotel hotel = findHotelByName(hotelName);
-        if (hotel == null) {
-            System.out.println("No hotel exists with the given name.");
-            return;
-        }
-    
-        System.out.print("Enter guest name: ");
-        String guestName = scanner.nextLine();
-    
-        LocalDate checkInDate = promptForDate("check-in");
-        if (checkInDate == null || !isValidBookingDate(checkInDate)) {
-            System.out.println("Invalid check-in date. Bookings cannot be made outside of the defined period for the month.");
-            return;
-        }
-    
-        LocalDate checkOutDate = promptForDate("check-out");
-        if (checkOutDate == null || !isValidBookingDate(checkOutDate)) {
-            System.out.println("Invalid check-out date. Bookings cannot be made outside of the defined period for the month.");
-            return;
-        }
-    
-        System.out.println("Select room type:");
-        System.out.println("[1] Standard");
-        System.out.println("[2] Deluxe");
-        System.out.println("[3] Executive");
-        System.out.print("Enter your choice: ");
-        int roomTypeChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-    
-        Room.RoomType roomType;
-        switch (roomTypeChoice) {
-            case 1:
-                roomType = Room.RoomType.STANDARD;
-                break;
-            case 2:
-                roomType = Room.RoomType.DELUXE;
-                break;
-            case 3:
-                roomType = Room.RoomType.EXECUTIVE;
-                break;
-            default:
-                System.out.println("Invalid room type choice. Booking cancelled.");
                 return;
-        }
-    
-        System.out.print("Enter discount code (or press Enter for no discount): ");
-        String discountCode = scanner.nextLine().trim();
-        if (discountCode.isEmpty()) {
-            discountCode = null;
-        }
-    
-        Reservation reservation = hotel.simulateBooking(guestName, checkInDate, checkOutDate, roomType, discountCode);
-        if (reservation != null) {
-            System.out.println("Booking successful!");
-            System.out.println("Room type: " + roomType);
-            System.out.println("Total price: " + reservation.getTotalPrice());
-            if (discountCode != null) {
-                System.out.println("Discount applied: " + discountCode);
-            }
-        } else {
-            System.out.println("No available rooms of type " + roomType + " for the selected dates.");
-        }
-    }
-
-    private LocalDate promptForDate(String dateType) {
-        Scanner scanner = new Scanner(System.in);
-        LocalDate date = null;
-        boolean isValid = false;
-
-        while (!isValid) {
-            System.out.print("Enter " + dateType + " date (yyyy-mm-dd): ");
-            String dateStr = scanner.nextLine();
-
-            try {
-                date = LocalDate.parse(dateStr);
-                isValid = true;
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter date in yyyy-mm-dd format.");
             }
         }
-        
-        return date;
+        if (!removed) {
+            JOptionPane.showMessageDialog(null, "Error: No hotel found with the given name.", "Hotel Not Found", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    private boolean isValidBookingDate(LocalDate date) {
-        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1); // Start of the current month
-        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth()); // End of the current month
-
-        return !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
-    }
-
-    private Hotel findHotelByName(String name) {
+    public Hotel findHotelByName(String name) {
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {
                 return hotel;
             }
         }
+        JOptionPane.showMessageDialog(null, "Error: No hotel found with the given name.", "Hotel Not Found", JOptionPane.ERROR_MESSAGE);
         return null;
+    }
+
+    public String[] getHotelNames() {
+        if (hotels.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Note: No hotels currently exist in the system.", "No Hotels", JOptionPane.INFORMATION_MESSAGE);
+            return new String[0];
+        }
+        String[] names = new String[hotels.size()];
+        for (int i = 0; i < hotels.size(); i++) {
+            names[i] = hotels.get(i).getName();
+        }
+        return names;
     }
 }

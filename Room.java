@@ -1,19 +1,19 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 public class Room {
-    private String name;
+
+private String name;
     private double price;
     private List<Reservation> reservations;
     private RoomType type;
 
+
     public enum RoomType {
         STANDARD, DELUXE, EXECUTIVE
     }
+
 
     public Room(String name, double basePrice, RoomType type) {
         this.name = name;
@@ -22,21 +22,26 @@ public class Room {
         this.reservations = new ArrayList<>();
     }
 
+
     public RoomType getType() {
         return type;
     }
+
 
     public String getName() {
         return name;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
 
+
     public double getPrice() {
         return price;
     }
+
 
     public void setPrice(double basePrice) {
         switch (type) {
@@ -52,17 +57,21 @@ public class Room {
         }
     }
 
+
     public List<Reservation> getReservations() {
         return reservations;
     }
+
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
 
+
     public void removeReservation(Reservation reservation) {
         this.reservations.remove(reservation);
     }
+
 
     public boolean isAvailable(LocalDate date) {
         for (Reservation res : this.reservations) {
@@ -77,24 +86,15 @@ public class Room {
         double total = 0.0;
         LocalDate currentDate = checkIn;
     
-        System.out.println("Price Breakdown:");
-        
-        // Iterate over each date from check-in up to but not including checkout date
         while (currentDate.isBefore(checkOut)) {
             double multiplier = getMultiplierForDate(currentDate);
             double dailyPrice = basePrice * multiplier;
             total += dailyPrice;
-            
-            System.out.printf("Date: %s, Multiplier: %.2f, Daily Price: %.2f, Accumulated Total: %.2f%n",
-                              currentDate, multiplier, dailyPrice, total);
-            
             currentDate = currentDate.plusDays(1);
         }
     
         return total;
     }
-    
-    
 
     private double getMultiplierForDate(LocalDate date) {
         int dayOfMonth = date.getDayOfMonth();
