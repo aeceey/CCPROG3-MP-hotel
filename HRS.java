@@ -40,7 +40,7 @@ public class HRS {
         }
         Hotel newHotel = new Hotel(name, standardRoomCount, deluxeRoomCount, executiveRoomCount, this);
         hotels.add(newHotel);
-        JOptionPane.showMessageDialog(null, "Hotel created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+       
     }
 
     /**
