@@ -96,7 +96,7 @@ public class Hotel {
      * Sets the name of the hotel. Throws an exception if a hotel with the same name already exists.
      *
      * @param name the new name of the hotel
-     * 
+     */
     public void setName(String name) {
         if (hrs.isHotelNameTaken(name)) {
             throw new IllegalArgumentException("A hotel with this name already exists.");
