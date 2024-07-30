@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 public class BookingSimulationView extends JFrame {
     private Hotel hotel;
@@ -31,11 +32,11 @@ public class BookingSimulationView extends JFrame {
         guestNameField = new JTextField();
         add(guestNameField);
 
-        add(new JLabel("Check-in Date (yyyy-mm-dd):"));
+        add(new JLabel("Check-in Date (yyyy-MM-dd):"));
         checkInField = new JTextField();
         add(checkInField);
 
-        add(new JLabel("Check-out Date (yyyy-mm-dd):"));
+        add(new JLabel("Check-out Date (yyyy-MM-dd):"));
         checkOutField = new JTextField();
         add(checkOutField);
 
@@ -64,7 +65,7 @@ public class BookingSimulationView extends JFrame {
             checkInDate = LocalDate.parse(checkInField.getText());
             checkOutDate = LocalDate.parse(checkOutField.getText());
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-mm-dd.");
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd.");
             return;
         }
 
@@ -74,11 +75,26 @@ public class BookingSimulationView extends JFrame {
         Reservation reservation = controller.simulateBooking(hotel, guestName, checkInDate, checkOutDate, roomType, discountCode);
 
         if (reservation != null) {
-            JOptionPane.showMessageDialog(this, 
-                "Booking successful!\n" +
-                "Guest: " + reservation.getGuestName() + "\n" +
-                "Room: " + reservation.getRoom().getName() + "\n" +
-                "Total Price: " + reservation.getTotalPrice());
+            StringBuilder message = new StringBuilder();
+            message.append("Booking successful!\n");
+            message.append("Guest: ").append(reservation.getGuestName()).append("\n");
+            message.append("Room: ").append(reservation.getRoom().getName()).append("\n");
+            message.append("Check-in: ").append(reservation.getCheckInDate()).append("\n");
+            message.append("Check-out: ").append(reservation.getCheckOutDate()).append("\n");
+            message.append("Total Price: $").append(String.format("%.2f", reservation.getTotalPrice())).append("\n\n");
+            
+            message.append("Price Breakdown:\n");
+            List<Double> breakdown = reservation.getBreakdownCost();
+            for (int i = 0; i < breakdown.size(); i++) {
+                message.append("Day ").append(i + 1).append(": $").append(String.format("%.2f", breakdown.get(i))).append("\n");
+            }
+
+            if (discountCode != null && discountCode.equals("STAY4_GET1") && 
+                reservation.getCheckOutDate().toEpochDay() - reservation.getCheckInDate().toEpochDay() >= 5) {
+                message.append("\nSTAY4_GET1 discount applied: First night is free!\n");
+            }
+
+            JOptionPane.showMessageDialog(this, message.toString());
         } else {
             JOptionPane.showMessageDialog(this, "Booking failed. No available rooms of the selected type for the given dates.");
         }

@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -46,12 +47,11 @@ public class Reservation {
      */
     private String discountCode;
 
-
     /**
      * This is the constructor for the Reservation class
-     * that creates the object given the  guest name, check-in date, 
+     * that creates the object given the guest name, check-in date,
      * check-out date, room, and discount code.
-     *  
+     *
      * @param guestName - the name of the guest
      * @param checkInDate - the check-in date for the reservation
      * @param checkOutDate - the check-out date for the reservation
@@ -66,7 +66,7 @@ public class Reservation {
         this.roomType = room.getType();
         this.breakdownCost = new ArrayList<>();
         this.discountCode = discountCode;
-        this.totalPrice = room.calculateTotalPrice(checkInDate, checkOutDate, room.getPrice());
+        calculateTotalPrice();
         applyDiscount();
     }
 
@@ -106,7 +106,7 @@ public class Reservation {
         return checkOutDate;
     }
 
-     /**
+    /**
      * A getter that gets the room reserved for the guest.
      *
      * @return the room reserved for the guest
@@ -119,11 +119,12 @@ public class Reservation {
      * A getter that gets the total price for the reservation.
      *
      * @return the total price for the reservation
-     */    public double getTotalPrice() {
+     */
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-     /**
+    /**
      * A getter that gets the breakdown of costs per night for the reservation.
      *
      * @return the list of costs per night
@@ -132,7 +133,7 @@ public class Reservation {
         return breakdownCost;
     }
 
-     /**
+    /**
      * A getter that gets the discount code applied to the reservation, if there is.
      *
      * @return the discount code applied to the reservation
@@ -146,25 +147,22 @@ public class Reservation {
      * and any applicable discount codes.
      */
     private void calculateTotalPrice() {
-        int nights = (int) checkInDate.until(checkOutDate).getDays();
+        int nights = (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
         double nightlyRate = room.getPrice();
         totalPrice = 0;
 
         for (int i = 0; i < nights; i++) {
-            double dailyRate = nightlyRate;
+            double dailyRate = nightlyRate * room.getMultiplierForDate(checkInDate.plusDays(i));
             if (discountCode != null && discountCode.equals("STAY4_GET1") && i == 0 && nights >= 5) {
-                dailyRate = 0; // First day is free
+                dailyRate = 0; // First day is free if stay is 5 days or more
             }
             breakdownCost.add(dailyRate);
             totalPrice += dailyRate;
         }
-
-        applyDiscount();
     }
 
-
     /**
-     * This method applies any applicable discount based on the discount code enrtered.
+     * This method applies any applicable discount based on the discount code entered.
      */
     private void applyDiscount() {
         if (discountCode == null) {
@@ -184,6 +182,4 @@ public class Reservation {
             // STAY4_GET1 is handled in calculateTotalPrice
         }
     }
-
 }
-

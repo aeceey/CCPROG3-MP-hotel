@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.util.List;
 
 public class HotelInfoView extends JFrame {
     private Hotel hotel;
@@ -174,19 +175,24 @@ public class HotelInfoView extends JFrame {
         info.append("Room Name: ").append(reservation.getRoom().getName()).append("\n");
         info.append("Check-In Date: ").append(reservation.getCheckInDate()).append("\n");
         info.append("Check-Out Date: ").append(reservation.getCheckOutDate()).append("\n");
-        info.append("Total Price: ").append(String.format("%.2f", reservation.getTotalPrice())).append("\n");
-        info.append("Price Breakdown per Night:\n");
     
-        Room room = reservation.getRoom();
-        double basePrice = room.getPrice();
+        List<Double> breakdownCost = reservation.getBreakdownCost();
+        double totalPrice = reservation.getTotalPrice();
         LocalDate date = reservation.getCheckInDate();
-        while (date.isBefore(reservation.getCheckOutDate())) {
-            double multiplier = room.getMultiplierForDate(date);
-            double dailyPrice = basePrice * multiplier;
+    
+        info.append("Price Breakdown per Night:\n");
+        for (Double dailyPrice : breakdownCost) {
+            double multiplier = reservation.getRoom().getMultiplierForDate(date);
             info.append(date).append(": ").append(String.format("%.2f", dailyPrice))
                 .append(" (Multiplier: ").append(String.format("%.2f", multiplier)).append(")\n");
             date = date.plusDays(1);
         }
+    
+        info.append("Total Price: ").append(String.format("%.2f", totalPrice)).append("\n");
         infoArea.setText(info.toString());
     }
+    
+
+    
+    
 }
