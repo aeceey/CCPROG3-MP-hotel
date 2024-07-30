@@ -78,6 +78,10 @@ public class HRSController {
         }
     }
 
+    public void removeHotel(String name) {
+        model.removeHotel(name);
+    }
+
     private void manageHotel() {
         String selectedHotel = mainView.getHotelList().getSelectedValue();
         if (selectedHotel == null) {
@@ -133,12 +137,15 @@ public class HRSController {
         hotel.setBasePrice(newBasePrice);
     }
     
-
-    public void removeReservation(Hotel hotel, String guestName, LocalDate checkInDate) {
-        hotel.removeReservation(guestName, checkInDate);
-    }
-
     public Reservation simulateBooking(Hotel hotel, String guestName, LocalDate checkInDate, LocalDate checkOutDate, Room.RoomType roomType, String discountCode) {
         return hotel.simulateBooking(guestName, checkInDate, checkOutDate, roomType, discountCode);
+    }
+
+    public String removeReservation(Hotel hotel, String guestName, LocalDate checkInDate) {
+        try {
+            return hotel.removeReservation(guestName, checkInDate);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("No reservation found for the given guest and check-in date.");
+        }
     }
 }

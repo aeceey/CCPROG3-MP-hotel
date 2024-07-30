@@ -174,7 +174,7 @@ public class Room {
      * @param date - the date to get the multiplier for
      * @return the price multiplier
      */
-    private double getMultiplierForDate(LocalDate date) {
+    public double getMultiplierForDate(LocalDate date) {
         int dayOfMonth = date.getDayOfMonth();
         
         if ((dayOfMonth >= 5 && dayOfMonth <= 7) ||
