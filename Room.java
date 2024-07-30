@@ -25,7 +25,9 @@ public class Room {
      */
     private RoomType type;
 
-
+    /**
+     * This method helps to categorize rooms into standard, deluxe, and executive types.
+     */
     public enum RoomType {
         STANDARD, DELUXE, EXECUTIVE
     }
