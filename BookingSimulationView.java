@@ -5,16 +5,57 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+/**
+ * The class BookingSimulationView represents the user interface that simulates
+ * booking a room in a hotel. To simulate the booking, the user will have to input booking details 
+ * such as guest name, check-in and check-out dates, room type, and a discount code, if there is any.
+ * and discount code 
+ */
+
 public class BookingSimulationView extends JFrame {
+    /**
+     * The hotel for which the booking is to be simulated.
+     */
     private Hotel hotel;
+
+    /**
+     * The controller that handles the booking simulation logic.
+     */
     private HRSController controller;
 
+    /**
+     * The text field for entering the guest's name.
+     */
     private JTextField guestNameField;
+
+    /**
+     * The text field for entering the check-in date in yyyy-MM-dd format.
+     */
     private JTextField checkInField;
+
+    /**
+     * The text field for entering the check-out date in yyyy-MM-dd format.
+     */
     private JTextField checkOutField;
+
+    /**
+     * This will display the drop-down that will let the user choose the room type.
+     */
     private JComboBox<Room.RoomType> roomTypeCombo;
+
+    /**
+     * The text field for entering a discount code.
+     */
     private JTextField discountCodeField;
 
+
+    /**
+     * The constructor that will create a new BookingSimulationView given
+     *  the hotel and the controller.
+     * 
+     * @param hotel - the hotel that will be used to simulate the booking
+     * @param controller - handles the logic of the booking simulation
+     */
     public BookingSimulationView(Hotel hotel, HRSController controller) {
         this.hotel = hotel;
         this.controller = controller;
@@ -26,6 +67,10 @@ public class BookingSimulationView extends JFrame {
         initComponents();
     }
 
+    /**
+     * This method handles the compnents of the user interface that the user will interact
+     * with and adds it into the window
+     */
     private void initComponents() {
         add(new JLabel("Guest Name:"));
         guestNameField = new JTextField();
@@ -57,6 +102,12 @@ public class BookingSimulationView extends JFrame {
         add(simulateButton);
     }
 
+
+    /**
+     * The simulateBooking method simulates a booking based on the information that the user entered.
+     * It handles the parsing of the input dates, getting the selected room type, and applying the discount code if any.
+     * It will also display the error or the success dialog after the process.
+     */
     private void simulateBooking() {
         String guestName = guestNameField.getText();
         LocalDate checkInDate, checkOutDate;
