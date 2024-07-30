@@ -1,13 +1,33 @@
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
+/**
+ *  The HRS class, short for Hotel Reservation System, manages a list of Hotels.
+ *  Creation, Management, Viewing, and Booking of Hotels happen in this class.
+ *  
+ */
 public class HRS {
+    /**
+     * The list of hotels managed by the HRS.
+     */
     private ArrayList<Hotel> hotels;
 
+
+    /**
+     *  This is a constructor for the HRS class which initializes the list of hotels.
+     */
     public HRS() {
-        this.hotels = new ArrayList<>();
+        this.hotels = new ArrayList<>(); // Initialize list of hotels
     }
 
+    /**
+     * Creates a new hotel with the specified parameters and adds it to the list of hotels.
+     * 
+     * @param name the name of the new hotel
+     * @param standardRoomCount the number of standard rooms in the hotel
+     * @param deluxeRoomCount the number of deluxe rooms in the hotel
+     * @param executiveRoomCount the number of executive rooms in the hotel
+     */
     public void createHotel(String name, int standardRoomCount, int deluxeRoomCount, int executiveRoomCount) {
         int totalRoomCount = standardRoomCount + deluxeRoomCount + executiveRoomCount;
         if (totalRoomCount < 1 || totalRoomCount > 50) {
@@ -23,6 +43,12 @@ public class HRS {
         JOptionPane.showMessageDialog(null, "Hotel created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * This method checks if the name of the hotel already exists as it has to be unique
+     * 
+     * @param name - the name of hotel to be checked
+     * @return true if the name is indeed taken, false if not
+     */
     public boolean isHotelNameTaken(String name) {
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {
@@ -32,6 +58,11 @@ public class HRS {
         return false;
     }
 
+    /**
+     * Removes a hotel with the specified name from the list of hotels.
+     * 
+     * @param name the name of the hotel to remove
+     */
     public void removeHotel(String name) {
         boolean removed = false;
         for (int i = hotels.size() - 1; i >= 0; i--) {
@@ -52,6 +83,12 @@ public class HRS {
         }
     }
 
+    /**
+     * Finds and returns a hotel with the specified name from the list of hotels.
+     * 
+     * @param name the name of the hotel to find
+     * @return the hotel with the given name, or null if no such hotel exists
+     */
     public Hotel findHotelByName(String name) {
         for (Hotel hotel : hotels) {
             if (hotel.getName().equals(name)) {
@@ -62,6 +99,11 @@ public class HRS {
         return null;
     }
 
+    /**
+     * Returns an array of names of all the hotels in the system.
+     * 
+     * @return an array of hotel names, or an empty array if no hotels exist
+     */
     public String[] getHotelNames() {
         if (hotels.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Note: No hotels currently exist in the system.", "No Hotels", JOptionPane.INFORMATION_MESSAGE);
