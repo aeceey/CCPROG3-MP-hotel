@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 
 public class BookingSimulationView extends JFrame {
     private Hotel hotel;
@@ -81,18 +80,7 @@ public class BookingSimulationView extends JFrame {
             message.append("Room: ").append(reservation.getRoom().getName()).append("\n");
             message.append("Check-in: ").append(reservation.getCheckInDate()).append("\n");
             message.append("Check-out: ").append(reservation.getCheckOutDate()).append("\n");
-            message.append("Total Price: $").append(String.format("%.2f", reservation.getTotalPrice())).append("\n\n");
-            
-            message.append("Price Breakdown:\n");
-            List<Double> breakdown = reservation.getBreakdownCost();
-            for (int i = 0; i < breakdown.size(); i++) {
-                message.append("Day ").append(i + 1).append(": $").append(String.format("%.2f", breakdown.get(i))).append("\n");
-            }
-
-            if (discountCode != null && discountCode.equals("STAY4_GET1") && 
-                reservation.getCheckOutDate().toEpochDay() - reservation.getCheckInDate().toEpochDay() >= 5) {
-                message.append("\nSTAY4_GET1 discount applied: First night is free!\n");
-            }
+            message.append("Total Price: ").append(String.format("%.2f", reservation.getTotalPrice())).append("\n\n");
 
             JOptionPane.showMessageDialog(this, message.toString());
         } else {

@@ -105,7 +105,6 @@ public class HotelInfoView extends JFrame {
         buttonPanel.add(availabilityButton);
         buttonPanel.add(roomInfoButton);
         buttonPanel.add(reservationInfoButton);
-        buttonPanel.add(backButton);
         buttonPanel.revalidate();
         buttonPanel.repaint();
     }
@@ -191,8 +190,6 @@ public class HotelInfoView extends JFrame {
         info.append("Total Price: ").append(String.format("%.2f", totalPrice)).append("\n");
         infoArea.setText(info.toString());
     }
-    
-
     
     
 }
