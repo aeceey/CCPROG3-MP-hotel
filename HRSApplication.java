@@ -1,4 +1,3 @@
-
 public class HRSApplication {
     public static void main(String[] args) {
         HRS model = new HRS();

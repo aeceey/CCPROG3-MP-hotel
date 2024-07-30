@@ -85,20 +85,27 @@ public class ManageHotelView extends JFrame {
     }
 
     private void updateHotel() {
-        String newName = newNameField.getText();
-        if (!newName.equals(hotel.getName())) {
-            controller.changeHotelName(hotel, newName);
-        }
+    String newName = newNameField.getText();
+    if (!newName.equals(hotel.getName())) {
+        controller.changeHotelName(hotel, newName);
+    }
 
+    try {
+        double newBasePrice = Double.parseDouble(basePriceField.getText());
         try {
-            double newBasePrice = Double.parseDouble(basePriceField.getText());
             controller.updateBasePrice(hotel, newBasePrice);
             JOptionPane.showMessageDialog(this, "Base price updated successfully.");
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid base price. Please enter a valid number.");
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Update Failed", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
-
-        JOptionPane.showMessageDialog(this, "Hotel updated successfully.");
-        dispose();
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Invalid base price. Please enter a valid number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
     }
+
+    JOptionPane.showMessageDialog(this, "Hotel updated successfully.");
+    dispose();
+}
+
 }

@@ -59,6 +59,7 @@ public class HRSController {
             model.createHotel(name, standardRooms, deluxeRooms, executiveRooms);
             updateHotelList();
             JOptionPane.showMessageDialog(mainView, "Hotel created successfully.");
+           // JOptionPane.showMessageDialog(mainView, "Hotel created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(mainView, "Invalid room numbers. Please enter integers.");
         }
@@ -121,8 +122,12 @@ public class HRSController {
     }
 
     public void updateBasePrice(Hotel hotel, double newBasePrice) {
+        if (!hotel.getReservations().isEmpty()) {
+            throw new IllegalStateException("Cannot update base price as there are existing bookings in the hotel.");
+        }
         hotel.setBasePrice(newBasePrice);
     }
+    
 
     public void removeReservation(Hotel hotel, String guestName, LocalDate checkInDate) {
         hotel.removeReservation(guestName, checkInDate);
