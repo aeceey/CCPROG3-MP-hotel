@@ -58,7 +58,7 @@ public class HRSController {
 
             model.createHotel(name, standardRooms, deluxeRooms, executiveRooms);
             updateHotelList();
-            JOptionPane.showMessageDialog(mainView, "Hotel created successfully.");
+            // JOptionPane.showMessageDialog(mainView, "Hotel created successfully.");
            // JOptionPane.showMessageDialog(mainView, "Hotel created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(mainView, "Invalid room numbers. Please enter integers.");
@@ -109,8 +109,13 @@ public class HRSController {
     }
 
     public void changeHotelName(Hotel hotel, String newName) {
-        hotel.setName(newName);
-        updateHotelList();
+        try {
+            hotel.setName(newName);
+            updateHotelList();
+            JOptionPane.showMessageDialog(mainView, "Hotel name updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainView, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void addRoom(Hotel hotel, Room.RoomType type) {

@@ -97,11 +97,11 @@ public class Hotel {
      *
      * @param name the new name of the hotel
      */
-    public void setName(String name) {
-        if (hrs.isHotelNameTaken(name)) {
-            throw new IllegalArgumentException("A hotel with this name already exists.");
+    public void setName(String newName) throws Exception {
+        if (hrs.isHotelNameTaken(newName)) {
+            throw new Exception("A hotel with this name already exists.");
         }
-        this.name = name;
+        this.name = newName;
     }
 
     /**

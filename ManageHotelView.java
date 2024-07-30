@@ -85,27 +85,39 @@ public class ManageHotelView extends JFrame {
     }
 
     private void updateHotel() {
-    String newName = newNameField.getText();
-    if (!newName.equals(hotel.getName())) {
-        controller.changeHotelName(hotel, newName);
-    }
-
-    try {
-        double newBasePrice = Double.parseDouble(basePriceField.getText());
-        try {
-            controller.updateBasePrice(hotel, newBasePrice);
-            JOptionPane.showMessageDialog(this, "Base price updated successfully.");
-        } catch (IllegalStateException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Update Failed", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        boolean nameChanged = false;
+        boolean basePriceChanged = false;
+    
+        String newName = newNameField.getText();
+        if (!newName.equals(hotel.getName())) {
+            try {
+                controller.changeHotelName(hotel, newName);
+                nameChanged = true;
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Exit early if there is an error
+            }
         }
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Invalid base price. Please enter a valid number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+    
+        try {
+            double newBasePrice = Double.parseDouble(basePriceField.getText());
+            if (newBasePrice != hotel.getBasePrice()) {
+                try {
+                    controller.updateBasePrice(hotel, newBasePrice);
+                    basePriceChanged = true;
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return; // Exit early if there is an error
+                }
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid base price. Please enter a valid number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return; // Exit early if there is an error
+        }
+    
+        dispose(); // Close the dialog
     }
-
-    JOptionPane.showMessageDialog(this, "Hotel updated successfully.");
-    dispose();
+    
 }
 
-}
+
