@@ -4,11 +4,22 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The HotelInfoView extends JFrame and displays information about the hotel.
+ * The user will be able to choose between high-level and low-level information about the hotel, its
+ * rooms, availability, and reservations. 
+ * 
+ */
 public class HotelInfoView extends JFrame {
     private Hotel hotel;
     private JTextArea infoArea;
     private JPanel buttonPanel;
 
+    /**
+     * This is the constructor that constructs a HotelInfoView, given a hotel.
+     * 
+     * @param hotel - the hotel whose information will be displayed
+     */
     public HotelInfoView(Hotel hotel) {
         this.hotel = hotel;
         setTitle("Hotel Information: " + hotel.getName());
@@ -40,6 +51,10 @@ public class HotelInfoView extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * This method will handle the display of the high-level information of the hotel.
+     * It will include the name, the number of rooms, the earnings, and the room details. 
+     */
     private void showHighLevelInfo() {
         StringBuilder info = new StringBuilder();
         info.append("Hotel Name: ").append(hotel.getName()).append("\n");
@@ -51,7 +66,11 @@ public class HotelInfoView extends JFrame {
         }
         infoArea.setText(info.toString());
     }
-
+    
+    /**
+     * This method will handle the display of the low-level information of the hotel.
+     * It will include the room availability, the room information, and the reservation information. 
+     */
     private void showLowLevelOptions() {
         buttonPanel.removeAll();
         
@@ -109,6 +128,11 @@ public class HotelInfoView extends JFrame {
         buttonPanel.repaint();
     }
 
+    /**
+     * This method handles the display of the room availability, given a specified date.
+     * 
+     * @param date - the date to check the room availability
+     */
     private void showRoomAvailability(LocalDate date) {
         StringBuilder info = new StringBuilder();
         info.append("Room Availability for ").append(date).append(":\n");
@@ -123,6 +147,12 @@ public class HotelInfoView extends JFrame {
         infoArea.setText(info.toString());
     }
 
+
+    /**
+     * This method displays the information of a room given the room name.
+     * 
+     * @param roomName - the name of the room whose infromation will be displayed.
+     */
     private void showRoomInfo(String roomName) {
         Room room = null;
         for (Room r : hotel.getRooms()) {
@@ -156,6 +186,12 @@ public class HotelInfoView extends JFrame {
         infoArea.setText(info.toString());
     }
 
+    /**
+     * This method displays the information about the reservation made given a guest name and the check-in date.
+     * 
+     * @param guestName
+     * @param checkInDate
+     */
     private void showReservationInfo(String guestName, LocalDate checkInDate) {
         Reservation reservation = null;
         for (Reservation res : hotel.getReservations()) {
