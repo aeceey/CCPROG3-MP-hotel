@@ -71,7 +71,7 @@ public class BookingSimulationView extends JFrame {
      * This method handles the compnents of the user interface that the user will interact
      * with and adds it into the window
      */
-    private void initComponents() {
+    public void initComponents() {
         add(new JLabel("Guest Name:"));
         guestNameField = new JTextField();
         add(guestNameField);
@@ -108,7 +108,7 @@ public class BookingSimulationView extends JFrame {
      * It handles the parsing of the input dates, getting the selected room type, and applying the discount code if any.
      * It will also display the error or the success dialog after the process.
      */
-    private void simulateBooking() {
+    public void simulateBooking() {
         String guestName = guestNameField.getText();
         LocalDate checkInDate, checkOutDate;
         try {

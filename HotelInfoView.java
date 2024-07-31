@@ -64,7 +64,7 @@ public class HotelInfoView extends JFrame {
      * This method will handle the display of the high-level information of the hotel.
      * It will include the name, the number of rooms, the earnings, and the room details. 
      */
-    private void showHighLevelInfo() {
+    public void showHighLevelInfo() {
         StringBuilder info = new StringBuilder();
         info.append("Hotel Name: ").append(hotel.getName()).append("\n");
         info.append("Total Rooms: ").append(hotel.getRoomCount()).append("\n");
@@ -80,7 +80,7 @@ public class HotelInfoView extends JFrame {
      * This method will handle the display of the low-level information of the hotel.
      * It will include the room availability, the room information, and the reservation information. 
      */
-    private void showLowLevelOptions() {
+    public void showLowLevelOptions() {
         buttonPanel.removeAll();
         
         JButton availabilityButton = new JButton("Room Availability");
@@ -142,7 +142,7 @@ public class HotelInfoView extends JFrame {
      * 
      * @param date - the date to check the room availability
      */
-    private void showRoomAvailability(LocalDate date) {
+    public void showRoomAvailability(LocalDate date) {
         StringBuilder info = new StringBuilder();
         info.append("Room Availability for ").append(date).append(":\n");
         for (Room room : hotel.getRooms()) {
@@ -162,7 +162,7 @@ public class HotelInfoView extends JFrame {
      * 
      * @param roomName - the name of the room whose infromation will be displayed.
      */
-    private void showRoomInfo(String roomName) {
+    public void showRoomInfo(String roomName) {
         Room room = null;
         for (Room r : hotel.getRooms()) {
             if (r.getName().equals(roomName)) {
@@ -201,7 +201,7 @@ public class HotelInfoView extends JFrame {
      * @param guestName
      * @param checkInDate
      */
-    private void showReservationInfo(String guestName, LocalDate checkInDate) {
+    public void showReservationInfo(String guestName, LocalDate checkInDate) {
         Reservation reservation = null;
         for (Reservation res : hotel.getReservations()) {
             if (res.getGuestName().equals(guestName) && res.getCheckInDate().equals(checkInDate)) {

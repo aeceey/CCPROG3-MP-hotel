@@ -147,7 +147,7 @@ public class Reservation {
      * The discount code "STAY4_GET1" is applied in this method, making the first day free
      * if the stay is 5 days or more.
      */
-    private void calculateTotalPrice() {
+    public void calculateTotalPrice() {
         int nights = (int) (checkOutDate.toEpochDay() - checkInDate.toEpochDay());
         double nightlyRate = room.getPrice();
         totalPrice = 0;
@@ -168,7 +168,7 @@ public class Reservation {
      * Applies the discount based on the discount code provided.
      * The code "I_WORK_HERE" will provide a 10% discount while "PAYDAY" will provide a 7% discount.
      */
-    private void applyDiscount() {
+    public void applyDiscount() {
         if (discountCode == null) {
             return;
         }

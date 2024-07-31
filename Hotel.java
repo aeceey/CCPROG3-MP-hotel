@@ -212,7 +212,7 @@ public class Hotel {
      * @param type the type of rooms to add
      * @param count the number of rooms to add
      */
-    private void addRooms(Room.RoomType type, int count) {
+    public void addRooms(Room.RoomType type, int count) {
         for (int i = 0; i < count; i++) {
             String roomName = name + String.format("%02d", nextRoomNumber++);
             this.rooms.add(new Room(roomName, basePrice, type));
@@ -408,7 +408,7 @@ public class Hotel {
      * @param checkOutDate - the check-out date
      * @return true if the room is available, false if not
      */
-    private boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+    public boolean isRoomAvailable(Room room, LocalDate checkInDate, LocalDate checkOutDate) {
         for (Reservation res : reservations) {
             if (res.getRoom().equals(room)) {
                 if (!(checkInDate.compareTo(res.getCheckOutDate()) >= 0 ||
