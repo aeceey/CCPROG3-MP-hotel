@@ -29,7 +29,18 @@ public class Room {
      * This method helps to categorize rooms into standard, deluxe, and executive types.
      */
     public enum RoomType {
-        STANDARD, DELUXE, EXECUTIVE
+        /**
+         * A standard room type
+         */
+        STANDARD, 
+        /**
+         * A deluxe room type
+         */
+        DELUXE, 
+        /**
+         * An executive room type
+         */
+        EXECUTIVE
     }
 
     /**
@@ -87,7 +98,7 @@ public class Room {
     /**
      * A setter that sets a new price per night for the room, based on the type of room.
      *
-     * @param price - the new price per night
+     * @param basePrice - the new price per night
      */
     public void setPrice(double basePrice) {
         switch (type) {

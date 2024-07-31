@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * 
+ * The MainView class represents the main window of the Hotel Reservation System.
+ * It provides the user interface components for creating, viewing, managing, and simulating bookings for hotels.
  */
 public class MainView extends JFrame {
     /**

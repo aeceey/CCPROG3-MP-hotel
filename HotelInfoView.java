@@ -11,8 +11,17 @@ import java.util.List;
  * 
  */
 public class HotelInfoView extends JFrame {
+    /**
+     * The hotel object associated with this view.
+     */
     private Hotel hotel;
+    /**
+     * The text area that is used to display the hotel information to user.
+     */
     private JTextArea infoArea;
+    /**
+     * The panel containing the buttons that the user will interact with for the hotel view
+     */
     private JPanel buttonPanel;
 
     /**

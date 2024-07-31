@@ -92,10 +92,11 @@ public class Hotel {
         return name;
     }
 
-    /**
+     /**
      * Sets the name of the hotel. Throws an exception if a hotel with the same name already exists.
      *
-     * @param name the new name of the hotel
+     * @param newName - the new name of the hotel
+     * @throws Exception if a hotel with the same name already exists
      */
     public void setName(String newName) throws Exception {
         if (hrs.isHotelNameTaken(newName)) {

@@ -70,6 +70,11 @@ public class Reservation {
         applyDiscount();
     }
 
+    /**
+     * Returns the type of the room.
+     *
+     * @return the type of the room as an enum value
+     */
     public Room.RoomType getRoomType() {
         return roomType;
     }
