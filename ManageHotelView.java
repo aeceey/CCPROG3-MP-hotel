@@ -6,17 +6,57 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * The ManageHotelView class provides the GUI for managing a hotel's details, rooms, and reservations.
+ */
 public class ManageHotelView extends JFrame {
+        /**
+     * The hotel being managed.
+     */
     private Hotel hotel;
+
+    /**
+     * The controller to handle actions.
+     */
     private HRSController controller;
 
+    /**
+     * Text field for the new hotel name.
+     */
     private JTextField newNameField;
+
+    /**
+     * A drop down that allows for selecting room type to add.
+     */
     private JComboBox<Room.RoomType> roomTypeCombo;
+
+    /**
+     * Text field for entering the name of the room to be removed.
+     */
     private JTextField roomNameField;
+
+    /**
+     * Text field for entering the new base price of the hotel.
+     */
     private JTextField basePriceField;
+
+    /**
+     * Text field for entering the guest name to remove a reservation.
+     */
     private JTextField guestNameField;
+
+    /**
+     * Text field for entering the check-in date to remove a reservation.
+     */
     private JTextField checkInDateField;
 
+
+    /**
+     * The constructor that creates a ManageHotelView instance.
+     * 
+     * @param hotel - the hotel to be managed
+     * @param controller - the controller who handles the actions
+     */
     public ManageHotelView(Hotel hotel, HRSController controller) {
         this.hotel = hotel;
         this.controller = controller;
@@ -28,7 +68,10 @@ public class ManageHotelView extends JFrame {
         mainComponents();
     }
 
-    private void mainComponents() {
+    /**
+     * This method initialized the main components of the view.
+     */
+    public void mainComponents() {
         add(new JLabel("New Hotel Name:"));
         newNameField = new JTextField(hotel.getName());
         add(newNameField);
@@ -99,7 +142,10 @@ public class ManageHotelView extends JFrame {
         add(removeHotelButton);
     }
 
-    private void addRoom() {
+    /**
+     * This method adds rooms to the hotel
+     */
+    public void addRoom() {
         if (hotel.getRoomCount() >= 50) {
             JOptionPane.showMessageDialog(this, 
                 "Maximum room limit (50) reached. Cannot add more rooms.", 
@@ -120,7 +166,11 @@ public class ManageHotelView extends JFrame {
         }
     }
 
-    private void removeRoom() {
+
+    /**
+     * This method removes rooms from the hotel
+     */
+    public void removeRoom() {
         String roomToRemove = roomNameField.getText();
         if (!roomToRemove.isEmpty()) {
             try {
@@ -136,18 +186,24 @@ public class ManageHotelView extends JFrame {
         }
     }
 
-    private void removeHotel() {
+    /**
+     * This method removes a hotel
+     */
+    public void removeHotel() {
         int confirm = JOptionPane.showConfirmDialog(this, 
             "Are you sure you want to remove this hotel?", 
             "Confirm Removal", 
             JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             controller.removeHotel(hotel.getName());
-            dispose(); // Close the management window
+            dispose(); 
         }
     }
 
-        private void removeReservation() {
+    /**
+     * This method removes a reservation
+     */
+    public void removeReservation() {
         String guestName = guestNameField.getText();
         String checkInDateStr = checkInDateField.getText();
 
@@ -163,7 +219,6 @@ public class ManageHotelView extends JFrame {
                 String result = controller.removeReservation(hotel, guestName, checkInDate);
                 JOptionPane.showMessageDialog(this, result, "Success", JOptionPane.INFORMATION_MESSAGE);
                 
-                // Clear the input fields after successful removal
                 guestNameField.setText("");
                 checkInDateField.setText("");
             } catch (IllegalArgumentException e) {
@@ -174,7 +229,10 @@ public class ManageHotelView extends JFrame {
         }
     }
 
-    private void updateHotel() {
+    /**
+     * This method updates the name and the base price of the hotel
+     */
+    public void updateHotel() {
         String newName = newNameField.getText();
         if (!newName.equals(hotel.getName())) {
             try {
@@ -202,7 +260,7 @@ public class ManageHotelView extends JFrame {
             return;
         }
     
-        dispose(); // Close the dialog
+        dispose(); 
     }
     
 }
