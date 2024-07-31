@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
  * The class BookingSimulationView represents the user interface that simulates
  * booking a room in a hotel. To simulate the booking, the user will have to input booking details 
  * such as guest name, check-in and check-out dates, room type, and a discount code, if there is any.
- * and discount code 
+ * and discount code.
  */
 
 public class BookingSimulationView extends JFrame {
